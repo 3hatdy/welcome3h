@@ -1,659 +1,1281 @@
 <!DOCTYPE html>
+
 <html lang="ko">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>세시간전 온보딩</title>
+
 <style>
-    /* 기본 초기화 및 폰트 설정 */
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
-    
-    /* [수정] 배경색 흰색, 웹 화면 중앙 정렬을 위한 최적화 */
-    body { background-color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; margin: 0; }
-    
-    /* [수정] 중앙 컨테이너 크기 및 가운데 정렬 최적화 */
-    #app { width: 100%; max-width: 600px; height: 100vh; max-height: 1000px; background-color: #fff; position: relative; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; margin: auto; }
-    
-    /* 공통 페이지 스타일 */
-    .page { display: none; flex-direction: column; justify-content: flex-start; width: 100%; height: 100%; padding: 20px 20px; }
-    .page.active { display: flex; }
-    
-    /* 상단 네비게이션 & 프로그레스 바 */
-    .header { display: flex; align-items: center; margin-bottom: 30px; flex-shrink: 0; width: 100%; max-width: 480px; margin-left: auto; margin-right: auto; }
-    .back-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; cursor: pointer; margin-right: 10px; margin-left: -5px; }
-    .progress-bar { flex-grow: 1; height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden; }
-    .progress-fill { height: 100%; background-color: #5CBBCC; border-radius: 4px; transition: width 0.3s ease; }
 
-    /* 콘텐츠를 감싸는 내부 컨테이너 (중앙 정렬용) */
-    .content-wrapper { width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+/* 기본 초기화 및 폰트 설정 */
 
-    /* 타이틀 및 텍스트 */
-    .title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #111827; line-height: 1.4; flex-shrink: 0; width: 100%; }
-    .subtitle { text-align: center; font-size: 14px; color: #6b7280; margin-bottom: 10px; width: 100%; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
 
-    /* 하단 고정 버튼 영역 */
-    /* [수정] 하단 버튼 중앙 정렬 및 여백 조정 */
-    .bottom-area { margin-top: auto; padding-top: 20px; flex-shrink: 0; width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
-    
-    /* [수정] 버튼 사이즈: 세로 1.5배(padding 증가), 가로 0.6배(width 제한) */
-    .btn { width: 60%; max-width: 360px; padding: 21px; border-radius: 8px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; transition: 0.2s; }
-    .btn-primary { background-color: #5CBBCC; color: white; }
-    .btn-primary:active { background-color: #4aa5b5; }
-    .btn-primary:disabled { background-color: #ccecf1; cursor: not-allowed; }
-    
-    /* 2페이지 플랫폼 선택 버튼 */
-    .btn-outline { width: 100%; max-width: 380px; margin: 0 auto 8px auto; background-color: white; border: 1px solid #dcdcdc; color: #333; border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 15px; font-size: 15px; font-weight: 600; flex-shrink: 0; }
-    .btn-outline.selected { border-color: #5CBBCC; background-color: rgba(92, 187, 204, 0.05); }
-    .platform-logo { font-size: 18px; font-style: italic; font-weight: 900; }
 
-    /* 펄스 애니메이션 */
-    @keyframes pulse {
-        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(92, 187, 204, 0.6); }
-        70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(92, 187, 204, 0); }
-        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(92, 187, 204, 0); }
-    }
-    .pulse-effect { animation: pulse 1.5s infinite; }
+/* [수정] 배경색 흰색, 웹 화면 중앙 정렬을 위한 최적화 */
 
-    /* 3페이지 링크 복사/상품 상세 */
-    .mock-product { border: 1px solid #e5e7eb; border-radius: 12px; padding: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; background: #fff; margin-bottom: 10px; flex-shrink: 0; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }
-    .url-pill-container { padding: 10px 15px 0 15px; }
-    
-    .url-pill { display: flex; justify-content: space-between; align-items: center; background-color: #fff; border: 1.5px solid #5CBBCC; border-radius: 30px; padding: 5px 5px 5px 20px; height: 46px; }
-    .url-text { font-size: 13px; color: #5CBBCC; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; font-weight: 500; }
-    
-    .copy-btn { background: #5CBBCC; color: #fff; border: none; padding: 0 16px; height: 34px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; white-space: nowrap; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-    .copy-btn.copied { background: #e0e0e0 !important; color: #666 !important; animation: none; transform: scale(1); box-shadow: none; border: none; }
-    
-    .product-details { padding: 12px 15px; text-align: left; }
-    .product-brand { font-size: 11px; color: #888; margin-bottom: 2px; display: block; }
-    .product-name { font-size: 14px; font-weight: bold; margin-bottom: 6px; line-height: 1.3; color: #333; }
-    .product-rating { font-size: 11px; color: #f59e0b; margin-bottom: 10px; }
-    .product-rating span { color: #888; margin-left: 4px; }
-    .product-image-mock { width: 100%; height: 160px; background: #e2e8f0; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; color: #94a3b8; font-size: 14px; text-align: center; padding: 10px; }
-    .product-price-row { margin-bottom: 8px; }
-    .price-original { font-size: 11px; color: #9ca3af; text-decoration: line-through; display: block; margin-bottom: 2px; }
-    .price-discount { font-size: 16px; font-weight: bold; color: #ef4444; margin-right: 6px; }
-    .price-final { font-size: 18px; font-weight: 800; color: #111827; }
-    .product-promo { background: #fef3c7; color: #b45309; font-size: 11px; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px; font-weight: 500; }
-    .product-shipping { font-size: 11px; color: #6b7280; margin-bottom: 10px; }
-    .product-btn-group { display: flex; gap: 6px; }
-    .product-btn-group button { flex: 1; padding: 8px; border-radius: 6px; border: none; font-size: 12px; font-weight: bold; }
-    .btn-cart { background: #f1f5f9; color: #475569; }
-    .btn-buy { background: #ccecf1; color: #5CBBCC; }
+body { background-color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; margin: 0; }
 
-    /* 페이지 4 링크 붙여넣기 유도 */
-    .input-box { display: flex; align-items: center; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; padding: 6px 8px 6px 15px; margin-top: 10px; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }
-    .input-text { flex-grow: 1; color: #9ca3af; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
-    .paste-btn { background: #5CBBCC; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; flex-shrink: 0; text-align: center; min-width: 65px; }
-    
-    /* 포스팅 페이지 */
-    .mock-post { border: 1px solid #e5e7eb; border-radius: 0; padding: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background: white; margin-top: 5px; overflow: hidden; flex-shrink: 0; width: 100%; max-width: 420px; margin-left: auto; margin-right: auto; text-align: left; }
-    .naver-header-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid #f3f4f6; }
-    .naver-logo-area { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: bold; color: #333; }
-    .naver-n-icon { background: #03C75A; color: white; width: 16px; height: 16px; border-radius: 2px; display: flex; justify-content: center; align-items: center; font-size: 11px; font-style: italic; font-weight: 900; }
-    .naver-divider { color: #d1d5db; font-weight: normal; margin: 0 2px; }
-    .naver-blog-name { color: #6b7280; font-weight: normal; }
-    .naver-right-icons svg { width: 16px; height: 16px; color: #6b7280; margin-left: 8px; }
-    .naver-content { padding: 12px; }
-    .naver-title { font-size: 15px; font-weight: bold; color: #111827; margin-bottom: 6px; line-height: 1.4; }
-    .naver-meta { font-size: 11px; color: #9ca3af; margin-bottom: 10px; }
-    .naver-body-text { font-size: 12px; color: #374151; line-height: 1.5; margin-bottom: 15px; }
-    
-    /* 포스팅 내 링크 삽입 점선 박스 */
-    .insert-zone { position: relative; border-radius: 8px; border: 2px dashed #d1d5db; background-color: #f9fafb; padding: 15px; text-align: center; transition: all 0.3s; }
-    .insert-zone.pasted { border-color: #5CBBCC; background-color: rgba(92, 187, 204, 0.05); padding: 0; border-style: solid; text-align: left; }
-    .insert-zone-initial svg { width: 24px; height: 24px; color: #9ca3af; margin: 0 auto 8px auto; display: block; }
-    .insert-zone-initial div { color: #6b7280; margin-bottom: 10px; font-size: 12px; }
-    .paste-link-button { display: inline-block; font-weight: bold; border-radius: 6px; padding: 8px 14px; background-color: #ccecf1; color: #5CBBCC; border: none; font-size: 12px; cursor: pointer; }
-    
-    .post-rich-card { display: none; padding: 10px; }
-    .post-rich-img { width: 100%; height: 100px; background: #e2e8f0; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; color: #94a3b8; font-size: 11px; text-align: center; padding: 10px; }
-    .post-rich-text { font-size: 13px; font-weight: bold; color: #111827; line-height: 1.3; margin-bottom: 4px; }
-    .post-rich-desc { font-size: 11px; color: #6b7280; }
 
-    /* 3단계 로딩 애니메이션 */
-    .progress-steps-container { display: flex; align-items: flex-start; justify-content: space-between; width: 100%; max-width: 400px; margin: 10px auto; position: relative; padding: 0 10px; }
-    .progress-line-bg { position: absolute; top: 1.5rem; left: 15%; width: 70%; height: 3px; background-color: #e5e7eb; transform: translateY(-50%); z-index: 0; }
-    .progress-line-fg { height: 3px; background-color: #82E6C2; width: 0%; transition: width 1s ease-in-out; }
-    .step-item { display: flex; flex-direction: column; align-items: center; z-index: 10; text-align: center; width: 33.33%; }
-    .step-icon-wrapper { width: 3rem; height: 3rem; border-radius: 50%; border: 3px solid #e5e7eb; background-color: white; display: flex; align-items: center; justify-content: center; transition: border-color 0.5s, transform 0.5s; transform: scale(0.8); }
-    .step-icon-wrapper.active { border-color: #82E6C2; transform: scale(1); }
-    .step-icon { width: 1.2rem; height: 1.2rem; color: #9ca3af; transition: color 0.5s; margin: 0; }
-    .step-icon-wrapper.active .step-icon { color: #82E6C2; }
-    .step-text { margin-top: 8px; font-weight: 600; font-size: 11px; color: #374151; opacity: 0.5; transform: translateY(5px); transition: opacity 0.5s, transform 0.5s; word-break: keep-all; line-height: 1.2; }
-    .step-text.active { opacity: 1; transform: translateY(0); }
-    .tracking-status { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; font-weight: bold; color: #374151; opacity: 0; transition: opacity 0.5s; margin-top: 20px; width: 100%; }
-    .tracking-status.visible { opacity: 1; }
-    .tracking-icon { width: 1.2rem; height: 1.2rem; color: #5CBBCC; margin: 0; }
-    .spin-anim { animation: spin 1s linear infinite; }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+/* [수정] 중앙 컨테이너 크기 및 가운데 정렬 최적화 */
 
-    /* 수익 테이블 */
-    .profit-table { width: 100%; max-width: 400px; margin: 0 auto; border-collapse: collapse; font-size: 13px; border-top: 1px solid #e5e7eb; }
-    .profit-table th, .profit-table td { padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: left; }
-    .profit-table th { background: #f9fafb; color: #6b7280; font-weight: 600; }
-    .text-green { color: #10b981; font-weight: bold; }
-    
-    /* 6페이지 하단 버튼 디자인 */
-    /* [수정] 결과 페이지 버튼 그룹 중앙 정렬 및 너비 조정 */
-    .result-btn-group { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; width: 100%; }
-    .btn-secondary-solid { background-color: #e5e7eb; color: #4b5563; }
-    .btn-secondary-solid:active { background-color: #d1d5db; }
-    .result-btn-group .btn { border-radius: 20px; font-size: 14px; padding: 16px; width: 60%; max-width: 360px; }
+#app { width: 100%; max-width: 600px; height: 100vh; max-height: 1000px; background-color: #fff; position: relative; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; margin: auto; }
 
-    /* 토스트 팝업 */
-    .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(51, 51, 51, 0.9); color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: bold; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 999; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-    .toast.show { opacity: 1; }
 
-    /* 모달 */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-    .modal-overlay.show { opacity: 1; pointer-events: auto; }
-    .modal-content { background: white; padding: 30px 20px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; max-width: 280px; width: 90%; transform: translateY(20px); transition: transform 0.3s ease; }
-    .modal-overlay.show .modal-content { transform: translateY(0); }
-    .modal-icon { width: 40px; height: 40px; margin: 0 auto 15px auto; color: #75ce7c; } 
-    .modal-title { font-size: 16px; font-weight: bold; color: #111827; margin-bottom: 10px; letter-spacing: -0.5px; }
-    .modal-desc { font-size: 13px; color: #6b7280; }
+/* 공통 페이지 스타일 */
+
+.page { display: none; flex-direction: column; justify-content: flex-start; width: 100%; height: 100%; padding: 20px 20px; }
+
+.page.active { display: flex; }
+
+
+/* 상단 네비게이션 & 프로그레스 바 */
+
+.header { display: flex; align-items: center; margin-bottom: 30px; flex-shrink: 0; width: 100%; max-width: 480px; margin-left: auto; margin-right: auto; }
+
+.back-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; cursor: pointer; margin-right: 10px; margin-left: -5px; }
+
+.progress-bar { flex-grow: 1; height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden; }
+
+.progress-fill { height: 100%; background-color: #5CBBCC; border-radius: 4px; transition: width 0.3s ease; }
+
+
+
+/* 콘텐츠를 감싸는 내부 컨테이너 (중앙 정렬용) */
+
+.content-wrapper { width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+
+
+
+/* 타이틀 및 텍스트 */
+
+.title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #111827; line-height: 1.4; flex-shrink: 0; width: 100%; }
+
+.subtitle { text-align: center; font-size: 14px; color: #6b7280; margin-bottom: 10px; width: 100%; }
+
+
+
+/* 하단 고정 버튼 영역 */
+
+/* [수정] 하단 버튼 중앙 정렬 및 여백 조정 */
+
+.bottom-area { margin-top: auto; padding-top: 20px; flex-shrink: 0; width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
+
+
+/* [수정] 버튼 사이즈: 세로 1.5배(padding 증가), 가로 0.6배(width 제한) */
+
+.btn { width: 60%; max-width: 360px; padding: 21px; border-radius: 8px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; transition: 0.2s; }
+
+.btn-primary { background-color: #5CBBCC; color: white; }
+
+.btn-primary:active { background-color: #4aa5b5; }
+
+.btn-primary:disabled { background-color: #ccecf1; cursor: not-allowed; }
+
+
+/* 2페이지 플랫폼 선택 버튼 */
+
+.btn-outline { width: 100%; max-width: 380px; margin: 0 auto 8px auto; background-color: white; border: 1px solid #dcdcdc; color: #333; border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 15px; font-size: 15px; font-weight: 600; flex-shrink: 0; }
+
+.btn-outline.selected { border-color: #5CBBCC; background-color: rgba(92, 187, 204, 0.05); }
+
+.platform-logo { font-size: 18px; font-style: italic; font-weight: 900; }
+
+
+
+/* 펄스 애니메이션 */
+
+@keyframes pulse {
+
+0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(92, 187, 204, 0.6); }
+
+70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(92, 187, 204, 0); }
+
+100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(92, 187, 204, 0); }
+
+}
+
+.pulse-effect { animation: pulse 1.5s infinite; }
+
+
+
+/* 3페이지 링크 복사/상품 상세 */
+
+.mock-product { border: 1px solid #e5e7eb; border-radius: 12px; padding: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; background: #fff; margin-bottom: 10px; flex-shrink: 0; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }
+
+.url-pill-container { padding: 10px 15px 0 15px; }
+
+
+.url-pill { display: flex; justify-content: space-between; align-items: center; background-color: #fff; border: 1.5px solid #5CBBCC; border-radius: 30px; padding: 5px 5px 5px 20px; height: 46px; }
+
+.url-text { font-size: 13px; color: #5CBBCC; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; font-weight: 500; }
+
+
+.copy-btn { background: #5CBBCC; color: #fff; border: none; padding: 0 16px; height: 34px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; white-space: nowrap; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+
+.copy-btn.copied { background: #e0e0e0 !important; color: #666 !important; animation: none; transform: scale(1); box-shadow: none; border: none; }
+
+
+.product-details { padding: 12px 15px; text-align: left; }
+
+.product-brand { font-size: 11px; color: #888; margin-bottom: 2px; display: block; }
+
+.product-name { font-size: 14px; font-weight: bold; margin-bottom: 6px; line-height: 1.3; color: #333; }
+
+.product-rating { font-size: 11px; color: #f59e0b; margin-bottom: 10px; }
+
+.product-rating span { color: #888; margin-left: 4px; }
+
+.product-image-mock { width: 100%; height: 160px; background: #e2e8f0; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; color: #94a3b8; font-size: 14px; text-align: center; padding: 10px; }
+
+.product-price-row { margin-bottom: 8px; }
+
+.price-original { font-size: 11px; color: #9ca3af; text-decoration: line-through; display: block; margin-bottom: 2px; }
+
+.price-discount { font-size: 16px; font-weight: bold; color: #ef4444; margin-right: 6px; }
+
+.price-final { font-size: 18px; font-weight: 800; color: #111827; }
+
+.product-promo { background: #fef3c7; color: #b45309; font-size: 11px; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px; font-weight: 500; }
+
+.product-shipping { font-size: 11px; color: #6b7280; margin-bottom: 10px; }
+
+.product-btn-group { display: flex; gap: 6px; }
+
+.product-btn-group button { flex: 1; padding: 8px; border-radius: 6px; border: none; font-size: 12px; font-weight: bold; }
+
+.btn-cart { background: #f1f5f9; color: #475569; }
+
+.btn-buy { background: #ccecf1; color: #5CBBCC; }
+
+
+
+/* 페이지 4 링크 붙여넣기 유도 */
+
+.input-box { display: flex; align-items: center; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; padding: 6px 8px 6px 15px; margin-top: 10px; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }
+
+.input-text { flex-grow: 1; color: #9ca3af; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+
+.paste-btn { background: #5CBBCC; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; flex-shrink: 0; text-align: center; min-width: 65px; }
+
+
+/* 포스팅 페이지 */
+
+.mock-post { border: 1px solid #e5e7eb; border-radius: 0; padding: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background: white; margin-top: 5px; overflow: hidden; flex-shrink: 0; width: 100%; max-width: 420px; margin-left: auto; margin-right: auto; text-align: left; }
+
+.naver-header-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid #f3f4f6; }
+
+.naver-logo-area { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: bold; color: #333; }
+
+.naver-n-icon { background: #03C75A; color: white; width: 16px; height: 16px; border-radius: 2px; display: flex; justify-content: center; align-items: center; font-size: 11px; font-style: italic; font-weight: 900; }
+
+.naver-divider { color: #d1d5db; font-weight: normal; margin: 0 2px; }
+
+.naver-blog-name { color: #6b7280; font-weight: normal; }
+
+.naver-right-icons svg { width: 16px; height: 16px; color: #6b7280; margin-left: 8px; }
+
+.naver-content { padding: 12px; }
+
+.naver-title { font-size: 15px; font-weight: bold; color: #111827; margin-bottom: 6px; line-height: 1.4; }
+
+.naver-meta { font-size: 11px; color: #9ca3af; margin-bottom: 10px; }
+
+.naver-body-text { font-size: 12px; color: #374151; line-height: 1.5; margin-bottom: 15px; }
+
+
+/* 포스팅 내 링크 삽입 점선 박스 */
+
+.insert-zone { position: relative; border-radius: 8px; border: 2px dashed #d1d5db; background-color: #f9fafb; padding: 15px; text-align: center; transition: all 0.3s; }
+
+.insert-zone.pasted { border-color: #5CBBCC; background-color: rgba(92, 187, 204, 0.05); padding: 0; border-style: solid; text-align: left; }
+
+.insert-zone-initial svg { width: 24px; height: 24px; color: #9ca3af; margin: 0 auto 8px auto; display: block; }
+
+.insert-zone-initial div { color: #6b7280; margin-bottom: 10px; font-size: 12px; }
+
+.paste-link-button { display: inline-block; font-weight: bold; border-radius: 6px; padding: 8px 14px; background-color: #ccecf1; color: #5CBBCC; border: none; font-size: 12px; cursor: pointer; }
+
+
+.post-rich-card { display: none; padding: 10px; }
+
+.post-rich-img { width: 100%; height: 100px; background: #e2e8f0; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; color: #94a3b8; font-size: 11px; text-align: center; padding: 10px; }
+
+.post-rich-text { font-size: 13px; font-weight: bold; color: #111827; line-height: 1.3; margin-bottom: 4px; }
+
+.post-rich-desc { font-size: 11px; color: #6b7280; }
+
+
+
+/* 3단계 로딩 애니메이션 */
+
+.progress-steps-container { display: flex; align-items: flex-start; justify-content: space-between; width: 100%; max-width: 400px; margin: 10px auto; position: relative; padding: 0 10px; }
+
+.progress-line-bg { position: absolute; top: 1.5rem; left: 15%; width: 70%; height: 3px; background-color: #e5e7eb; transform: translateY(-50%); z-index: 0; }
+
+.progress-line-fg { height: 3px; background-color: #82E6C2; width: 0%; transition: width 1s ease-in-out; }
+
+.step-item { display: flex; flex-direction: column; align-items: center; z-index: 10; text-align: center; width: 33.33%; }
+
+.step-icon-wrapper { width: 3rem; height: 3rem; border-radius: 50%; border: 3px solid #e5e7eb; background-color: white; display: flex; align-items: center; justify-content: center; transition: border-color 0.5s, transform 0.5s; transform: scale(0.8); }
+
+.step-icon-wrapper.active { border-color: #82E6C2; transform: scale(1); }
+
+.step-icon { width: 1.2rem; height: 1.2rem; color: #9ca3af; transition: color 0.5s; margin: 0; }
+
+.step-icon-wrapper.active .step-icon { color: #82E6C2; }
+
+.step-text { margin-top: 8px; font-weight: 600; font-size: 11px; color: #374151; opacity: 0.5; transform: translateY(5px); transition: opacity 0.5s, transform 0.5s; word-break: keep-all; line-height: 1.2; }
+
+.step-text.active { opacity: 1; transform: translateY(0); }
+
+.tracking-status { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; font-weight: bold; color: #374151; opacity: 0; transition: opacity 0.5s; margin-top: 20px; width: 100%; }
+
+.tracking-status.visible { opacity: 1; }
+
+.tracking-icon { width: 1.2rem; height: 1.2rem; color: #5CBBCC; margin: 0; }
+
+.spin-anim { animation: spin 1s linear infinite; }
+
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+
+
+/* 수익 테이블 */
+
+.profit-table { width: 100%; max-width: 400px; margin: 0 auto; border-collapse: collapse; font-size: 13px; border-top: 1px solid #e5e7eb; }
+
+.profit-table th, .profit-table td { padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+
+.profit-table th { background: #f9fafb; color: #6b7280; font-weight: 600; }
+
+.text-green { color: #10b981; font-weight: bold; }
+
+
+/* 6페이지 하단 버튼 디자인 */
+
+/* [수정] 결과 페이지 버튼 그룹 중앙 정렬 및 너비 조정 */
+
+.result-btn-group { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; width: 100%; }
+
+.btn-secondary-solid { background-color: #e5e7eb; color: #4b5563; }
+
+.btn-secondary-solid:active { background-color: #d1d5db; }
+
+.result-btn-group .btn { border-radius: 20px; font-size: 14px; padding: 16px; width: 60%; max-width: 360px; }
+
+
+
+/* 토스트 팝업 */
+
+.toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(51, 51, 51, 0.9); color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: bold; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 999; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+.toast.show { opacity: 1; }
+
+
+
+/* 모달 */
+
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+
+.modal-overlay.show { opacity: 1; pointer-events: auto; }
+
+.modal-content { background: white; padding: 30px 20px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; max-width: 280px; width: 90%; transform: translateY(20px); transition: transform 0.3s ease; }
+
+.modal-overlay.show .modal-content { transform: translateY(0); }
+
+.modal-icon { width: 40px; height: 40px; margin: 0 auto 15px auto; color: #75ce7c; }
+
+.modal-title { font-size: 16px; font-weight: bold; color: #111827; margin-bottom: 10px; letter-spacing: -0.5px; }
+
+.modal-desc { font-size: 13px; color: #6b7280; }
+
 </style>
+
 </head>
+
 <body>
 
+
+
 <div id="app">
-    
-    <div class="page active" id="page-0">
-        <div class="content-wrapper" style="margin-top: 40px;">
-            <div style="text-align: center; font-weight: 900; color:#5CBBCC; font-size: 20px; letter-spacing: -1px;">세시간전</div>
-            <div class="hero-img" style="background: transparent; margin: 15px auto 10px auto; width: 200px; height: auto;">
-                <img src="Group 7033.png" alt="플랫폼 아이콘 일러스트" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px;">
-            </div>
-            <div class="title" style="margin-bottom: 5px;">누구나 쉽게 시작하는 블로그 수익!</div>
-            <div class="subtitle">이렇게 시작해 보세요!</div>
-        </div>
-        <div class="bottom-area">
-            <button class="btn btn-primary" onclick="goToPage(1)">시작하기</button>
-        </div>
-    </div>
 
-    <div class="page" id="page-1">
-        <div class="header">
-            <div class="back-btn" onclick="goToPage(0)">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a0a0a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
-        </div>
-        <div class="content-wrapper">
-            <div class="title" style="margin-bottom: 15px;">이용해본 플랫폼이 있나요?</div>
-            <div id="platform-btn-container" style="width: 100%;"></div>
-        </div>
-        <div class="bottom-area">
-            <button class="btn btn-primary" id="btn-next-1" onclick="goToPage(2)" disabled>계속하기</button>
-        </div>
-    </div>
 
-    <div class="page" id="page-2">
-        <div class="header">
-            <div class="back-btn" onclick="goToPage(1)">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a0a0a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
-        </div>
-        <div class="content-wrapper">
-            <div class="title" style="margin-bottom: 10px;">상품페이지 링크(URL)를 복사하세요</div>
-            <div class="mock-product">
-                <div class="url-pill-container">
-                    <div class="url-pill">
-                        <span class="url-text" id="dynamic-url-text"></span>
-                        <button class="copy-btn pulse-effect" id="btn-copy" onclick="copyUrl()">복사하기</button>
-                    </div>
-                </div>
-                <div class="product-details">
-                    <span class="product-brand" id="dynamic-product-brand"></span>
-                    <div class="product-name" id="dynamic-product-name"></div>
-                    <div class="product-rating">⭐⭐⭐⭐⭐ <span id="dynamic-product-reviews"></span></div>
-                    <div class="product-price-row">
-                        <span class="price-original" id="dynamic-price-original"></span>
-                        <span class="price-discount" id="dynamic-price-discount"></span>
-                        <span class="price-final" id="dynamic-price-final"></span>
-                    </div>
-                    <div class="product-promo" id="dynamic-product-promo"></div>
-                    <div class="product-shipping" id="dynamic-product-shipping"></div>
-                    <div class="product-btn-group">
-                        <button class="btn-cart">장바구니</button>
-                        <button class="btn-buy">바로구매</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="bottom-area">
-            <button class="btn btn-primary" id="btn-next-2" onclick="goToPage(3)" disabled>계속하기</button>
-        </div>
-    </div>
+<div class="page active" id="page-0">
 
-    <div class="page" id="page-3">
-        <div class="header">
-            <div class="back-btn" onclick="goToPage(2)">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a0a0a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
-        </div>
-        <div class="content-wrapper" style="margin-top: 20px;">
-            <div class="title" style="margin-bottom: 15px;">상품 링크를 나만의 제휴링크로 만들어요!</div>
-            <div style="text-align:center; font-size: 13px; font-weight:bold; color: #374151; width: 100%;">상품링크</div>
-            <div class="input-box">
-                <div class="input-text" id="link-display">복사한 링크를 붙여넣어주세요.</div>
-                <button class="paste-btn pulse-effect" id="btn-paste" onclick="pasteLink()">붙여넣기</button>
-            </div>
-        </div>
-        <div class="bottom-area">
-            <button class="btn btn-primary" id="btn-next-3" onclick="makeLinkPopup()" disabled>제휴링크 만들기</button>
-        </div>
-    </div>
+<div class="content-wrapper" style="margin-top: 40px;">
 
-    <div class="page" id="page-4">
-        <div class="header">
-            <div class="back-btn" onclick="goToPage(3)">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a0a0a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 80%;"></div></div>
-        </div>
-        <div class="content-wrapper">
-            <div class="title" style="margin-bottom: 5px;">포스팅에 제휴링크를<br>삽입해 보세요</div>
-            <div class="mock-post">
-                <div class="naver-header-bar">
-                    <div class="naver-logo-area">
-                        <div class="naver-n-icon">N</div> Blog <span class="naver-divider">|</span> <span class="naver-blog-name">내 블로그</span>
-                    </div>
-                    <div class="naver-right-icons">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
-                    </div>
-                </div>
-                <div class="naver-content">
-                    <div class="naver-title" id="dynamic-blog-title"></div>
-                    <div class="naver-meta" id="dynamic-blog-meta"></div>
-                    <div class="naver-body-text" id="dynamic-blog-body"></div>
-                    <div class="insert-zone" id="post-insert-zone">
-                        <div class="insert-zone-initial" id="post-insert-initial">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                            <div>여기에 제휴 링크를 삽입해보세요</div>
-                            <button class="paste-link-button" onclick="insertLinkToPost()">🔗 제휴링크 붙여넣기</button>
-                        </div>
-                        <div class="post-rich-card" id="post-rich-card">
-                            <div class="post-rich-img" id="dynamic-rich-img-text"></div>
-                            <div class="post-rich-text" id="dynamic-rich-title"></div>
-                            <div class="post-rich-desc" id="dynamic-rich-desc"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="bottom-area">
-            <button class="btn btn-primary" id="btn-next-4" onclick="goToPage(5)" disabled>수익 확인하기</button>
-        </div>
-    </div>
+<div style="text-align: center; font-weight: 900; color:#5CBBCC; font-size: 20px; letter-spacing: -1px;">세시간전</div>
 
-    <div class="page" id="page-5">
-        <div class="content-wrapper" style="margin-top: 30px;">
-            <div class="title">구매를 기다리고 있어요</div>
-            <div class="subtitle">세시간전 시스템이 판매 과정을 추적하고 있습니다</div>
-            
-            <div class="progress-steps-container">
-                <div class="progress-line-bg"><div class="progress-line-fg" id="step-progress-line"></div></div>
-                <div class="step-item">
-                    <div class="step-icon-wrapper" id="step-icon-1"><svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></div>
-                    <div class="step-text" id="step-text-1">방문자가<br>콘텐츠를 봤어요!</div>
-                </div>
-                <div class="step-item">
-                    <div class="step-icon-wrapper" id="step-icon-2"><svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9l5 12 1.8-5.2L21 14l-4.3-4.3L9 9z"></path><path d="M11.7 2.3c-.4-.4-.8-.7-1.3-.7C4.8 1.6 2 4.4 2 9.8c0 2 .5 3.8 1.2 5.2.1.2.2.4.3.6l.3.6c.2.4.4.8.7 1.1l.4.5c.3.4.6.8.9 1.1l.5.5c.3.3.6.6.9.8l.4.3c.3.2.6.4.9.6.2.1.4.3.6.4.3.2.6.3.9.5.3.1.6.3.9.4.2.1.4.1.6.2.3.1.6.1.9-.1.3-.1.6-.1.9-.2.2 0 .4-.1.6-.2.3-.1.6-.3.9-.4.3-.1.6-.3.9-.5.2-.1.4-.3.6-.4.3-.2.6-.4.9-.6l.4-.3c.3-.2.6-.5.9-.8l.5-.5c.3-.3.6-.7.9-1.1l.4-.5c.3-.4.6-.8.7-1.1l.3-.6c.1-.2.2-.4.3-.6.7-1.4 1.2-3.2 1.2-5.2 0-5.4-2.8-8.2-8.4-8.2-.5 0-1 .3-1.3.7Z"></path></svg></div>
-                    <div class="step-text" id="step-text-2">제휴링크<br>클릭 발생!</div>
-                </div>
-                <div class="step-item">
-                    <div class="step-icon-wrapper" id="step-icon-3"><svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg></div>
-                    <div class="step-text" id="step-text-3">누군가 상품을<br>구매했어요!</div>
-                </div>
-            </div>
-            <div class="tracking-status" id="tracking-status">
-                <svg class="tracking-icon spin-anim" id="tracking-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
-                <span id="tracking-text">세시간전이 판매를 확인 중입니다.</span>
-            </div>
-        </div>
-    </div>
+<div class="hero-img" style="background: transparent; margin: 15px auto 10px auto; width: 200px; height: auto;">
 
-    <div class="page" id="page-6">
-        <div class="header">
-            <div class="back-btn" onclick="goToPage(0)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a0a0a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
-        </div>
-        
-        <div class="content-wrapper" style="margin-top: 10px;">
-            <div class="title" style="margin-bottom: 20px;">포스팅에 링크 한 줄만 추가해서,<br>수익이 발생했어요! 🎉</div>
-            <table class="profit-table">
-                <thead><tr><th>프로그램</th><th>상품명</th><th>수익 금액</th></tr></thead>
-                <tbody>
-                    <tr style="background:#f0fdf4;"><td style="color:#374151;" id="final-platform-name"></td><td style="color:#374151;" id="final-product-name"></td><td class="text-green" id="final-profit"></td></tr>
-                    <tr><td style="color:#6b7280;">아고다</td><td style="color:#6b7280;">Mangrove...</td><td style="color:#374151; font-weight:bold;">113,189 원</td></tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="bottom-area">
-            <div class="result-btn-group">
-                <button class="btn btn-primary pulse-effect" onclick="alert('튜토리얼을 완료했습니다!')">지금 첫 제휴링크 생성하기</button>
-                <button class="btn btn-secondary-solid" onclick="alert('준비 중인 기능입니다.')">포스팅 내 제휴링크 삽입 팁!</button>
-                <button class="btn btn-secondary-solid" onclick="alert('준비 중인 기능입니다.')">더 자세한 가이드 확인하기</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="toast" id="copy-toast">✓ 복사가 완료되었습니다.</div>
-    <div class="modal-overlay" id="link-success-modal">
-        <div class="modal-content">
-            <svg class="modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            <div class="modal-title">제휴링크가 생성되었습니다!</div>
-            <div class="modal-desc">클립보드에 복사되었어요.</div>
-        </div>
-    </div>
+<img src="https://placehold.co/400x300/e0f2f1/5CBBCC?text=Illustration" alt="플랫폼 아이콘 일러스트" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px;">
 
 </div>
 
+<div class="title" style="margin-bottom: 5px;">누구나 쉽게 시작하는 블로그 수익!</div>
+
+<div class="subtitle">이렇게 시작해 보세요!</div>
+
+</div>
+
+<div class="bottom-area">
+
+<button class="btn btn-primary" onclick="goToPage(1)">시작하기</button>
+
+</div>
+
+</div>
+
+
+
+<div class="page" id="page-1">
+
+<div class="header">
+
+<div class="back-btn" onclick="goToPage(0)">
+
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a0a0a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+
+</div>
+
+<div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
+
+</div>
+
+<div class="content-wrapper">
+
+<div class="title" style="margin-bottom: 15px;">이용해본 플랫폼이 있나요?</div>
+
+<div id="platform-btn-container" style="width: 100%;"></div>
+
+</div>
+
+<div class="bottom-area">
+
+<button class="btn btn-primary" id="btn-next-1" onclick="goToPage(2)" disabled>계속하기</button>
+
+</div>
+
+</div>
+
+
+
+<div class="page" id="page-2">
+
+<div class="header">
+
+<div class="back-btn" onclick="goToPage(1)">
+
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a0a0a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+
+</div>
+
+<div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
+
+</div>
+
+<div class="content-wrapper">
+
+<div class="title" style="margin-bottom: 10px;">상품페이지 링크(URL)를 복사하세요</div>
+
+<div class="mock-product">
+
+<div class="url-pill-container">
+
+<div class="url-pill">
+
+<span class="url-text" id="dynamic-url-text"></span>
+
+<button class="copy-btn pulse-effect" id="btn-copy" onclick="copyUrl()">복사하기</button>
+
+</div>
+
+</div>
+
+<div class="product-details">
+
+<span class="product-brand" id="dynamic-product-brand"></span>
+
+<div class="product-name" id="dynamic-product-name"></div>
+
+<div class="product-rating">⭐⭐⭐⭐⭐ <span id="dynamic-product-reviews"></span></div>
+
+<div class="product-price-row">
+
+<span class="price-original" id="dynamic-price-original"></span>
+
+<span class="price-discount" id="dynamic-price-discount"></span>
+
+<span class="price-final" id="dynamic-price-final"></span>
+
+</div>
+
+<div class="product-promo" id="dynamic-product-promo"></div>
+
+<div class="product-shipping" id="dynamic-product-shipping"></div>
+
+<div class="product-btn-group">
+
+<button class="btn-cart">장바구니</button>
+
+<button class="btn-buy">바로구매</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="bottom-area">
+
+<button class="btn btn-primary" id="btn-next-2" onclick="goToPage(3)" disabled>계속하기</button>
+
+</div>
+
+</div>
+
+
+
+<div class="page" id="page-3">
+
+<div class="header">
+
+<div class="back-btn" onclick="goToPage(2)">
+
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a0a0a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+
+</div>
+
+<div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+
+</div>
+
+<div class="content-wrapper" style="margin-top: 20px;">
+
+<div class="title" style="margin-bottom: 15px;">상품 링크를 나만의 제휴링크로 만들어요!</div>
+
+<div style="text-align:center; font-size: 13px; font-weight:bold; color: #374151; width: 100%;">상품링크</div>
+
+<div class="input-box">
+
+<div class="input-text" id="link-display">복사한 링크를 붙여넣어주세요.</div>
+
+<button class="paste-btn pulse-effect" id="btn-paste" onclick="pasteLink()">붙여넣기</button>
+
+</div>
+
+</div>
+
+<div class="bottom-area">
+
+<button class="btn btn-primary" id="btn-next-3" onclick="makeLinkPopup()" disabled>제휴링크 만들기</button>
+
+</div>
+
+</div>
+
+
+
+<div class="page" id="page-4">
+
+<div class="header">
+
+<div class="back-btn" onclick="goToPage(3)">
+
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a0a0a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+
+</div>
+
+<div class="progress-bar"><div class="progress-fill" style="width: 80%;"></div></div>
+
+</div>
+
+<div class="content-wrapper">
+
+<div class="title" style="margin-bottom: 5px;">포스팅에 제휴링크를<br>삽입해 보세요</div>
+
+<div class="mock-post">
+
+<div class="naver-header-bar">
+
+<div class="naver-logo-area">
+
+<div class="naver-n-icon">N</div> Blog <span class="naver-divider">|</span> <span class="naver-blog-name">내 블로그</span>
+
+</div>
+
+<div class="naver-right-icons">
+
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+
+</div>
+
+</div>
+
+<div class="naver-content">
+
+<div class="naver-title" id="dynamic-blog-title"></div>
+
+<div class="naver-meta" id="dynamic-blog-meta"></div>
+
+<div class="naver-body-text" id="dynamic-blog-body"></div>
+
+<div class="insert-zone" id="post-insert-zone">
+
+<div class="insert-zone-initial" id="post-insert-initial">
+
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+
+<div>여기에 제휴 링크를 삽입해보세요</div>
+
+<button class="paste-link-button" onclick="insertLinkToPost()">🔗 제휴링크 붙여넣기</button>
+
+</div>
+
+<div class="post-rich-card" id="post-rich-card">
+
+<div class="post-rich-img" id="dynamic-rich-img-text"></div>
+
+<div class="post-rich-text" id="dynamic-rich-title"></div>
+
+<div class="post-rich-desc" id="dynamic-rich-desc"></div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="bottom-area">
+
+<button class="btn btn-primary" id="btn-next-4" onclick="goToPage(5)" disabled>수익 확인하기</button>
+
+</div>
+
+</div>
+
+
+
+<div class="page" id="page-5" style="justify-content: center;">
+
+<div class="content-wrapper">
+
+<div class="title">구매를 기다리고 있어요</div>
+
+<div class="subtitle">세시간전 시스템이 판매 과정을 추적하고 있습니다</div>
+
+
+<div class="progress-steps-container">
+
+<div class="progress-line-bg"><div class="progress-line-fg" id="step-progress-line"></div></div>
+
+<div class="step-item">
+
+<div class="step-icon-wrapper" id="step-icon-1"><svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></div>
+
+<div class="step-text" id="step-text-1">방문자가<br>콘텐츠를 봤어요!</div>
+
+</div>
+
+<div class="step-item">
+
+<div class="step-icon-wrapper" id="step-icon-2"><svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9l5 12 1.8-5.2L21 14l-4.3-4.3L9 9z"></path><path d="M11.7 2.3c-.4-.4-.8-.7-1.3-.7C4.8 1.6 2 4.4 2 9.8c0 2 .5 3.8 1.2 5.2.1.2.2.4.3.6l.3.6c.2.4.4.8.7 1.1l.4.5c.3.4.6.8.9 1.1l.5.5c.3.3.6.6.9.8l.4.3c.3.2.6.4.9.6.2.1.4.3.6.4.3.2.6.3.9.5.3.1.6.3.9.4.2.1.4.1.6.2.3.1.6.1.9-.1.3-.1.6-.1.9-.2.2 0 .4-.1.6-.2.3-.1.6-.3.9-.4.3-.1.6-.3.9-.5.2-.1.4-.3.6-.4.3-.2.6-.4.9-.6l.4-.3c.3-.2.6-.5.9-.8l.5-.5c.3-.3.6-.7.9-1.1l.4-.5c.3-.4.6-.8.7-1.1l.3-.6c.1-.2.2-.4.3-.6.7-1.4 1.2-3.2 1.2-5.2 0-5.4-2.8-8.2-8.4-8.2-.5 0-1 .3-1.3.7Z"></path></svg></div>
+
+<div class="step-text" id="step-text-2">제휴링크<br>클릭 발생!</div>
+
+</div>
+
+<div class="step-item">
+
+<div class="step-icon-wrapper" id="step-icon-3"><svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg></div>
+
+<div class="step-text" id="step-text-3">누군가 상품을<br>구매했어요!</div>
+
+</div>
+
+</div>
+
+<div class="tracking-status" id="tracking-status">
+
+<svg class="tracking-icon spin-anim" id="tracking-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+
+<span id="tracking-text">세시간전이 판매를 확인 중입니다.</span>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="page" id="page-6">
+
+<div class="header">
+
+<div class="back-btn" onclick="goToPage(0)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a0a0a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></div>
+
+<div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+
+</div>
+
+
+<div class="content-wrapper" style="margin-top: 10px;">
+
+<div class="title" style="margin-bottom: 20px;">포스팅에 링크 한 줄만 추가해서,<br>수익이 발생했어요! 🎉</div>
+
+<table class="profit-table">
+
+<thead><tr><th>프로그램</th><th>상품명</th><th>수익 금액</th></tr></thead>
+
+<tbody>
+
+<tr style="background:#f0fdf4;"><td style="color:#374151;" id="final-platform-name"></td><td style="color:#374151;" id="final-product-name"></td><td class="text-green" id="final-profit"></td></tr>
+
+<tr><td style="color:#6b7280;">아고다</td><td style="color:#6b7280;">Mangrove...</td><td style="color:#374151; font-weight:bold;">113,189 원</td></tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<div class="bottom-area">
+
+<div class="result-btn-group">
+
+<button class="btn btn-primary pulse-effect" onclick="alert('튜토리얼을 완료했습니다!')">지금 첫 제휴링크 생성하기</button>
+
+<button class="btn btn-secondary-solid" onclick="alert('준비 중인 기능입니다.')">포스팅 내 제휴링크 삽입 팁!</button>
+
+<button class="btn btn-secondary-solid" onclick="alert('준비 중인 기능입니다.')">더 자세한 가이드 확인하기</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="toast" id="copy-toast">✓ 복사가 완료되었습니다.</div>
+
+<div class="modal-overlay" id="link-success-modal">
+
+<div class="modal-content">
+
+<svg class="modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+
+<div class="modal-title">제휴링크가 생성되었습니다!</div>
+
+<div class="modal-desc">클립보드에 복사되었어요.</div>
+
+</div>
+
+</div>
+
+
+
+</div>
+
+
+
 <script>
-    // =========================================================================
-    // 👇 직접 문구를 수정할 수 있는 데이터 영역입니다 👇
-    // =========================================================================
 
-    // 1페이지 플랫폼 버튼 리스트
-    const platformList = [
-        { id: "myrealtrip", name: "마이리얼트립", logoText: "My", logoColor: "#2563eb", logoSize: "18px", isItalic: true },
-        { id: "klook", name: "클룩", logoText: "KLOOK", logoColor: "#ff5e1a", logoSize: "18px", isItalic: false },
-        { id: "ohou", name: "오늘의집", logoText: "오늘의집", logoColor: "#35C5F0", logoSize: "16px", isItalic: false },
-        { id: "tripcom", name: "트립닷컴", logoText: "Trip.com", logoColor: "#0f294d", logoSize: "16px", isItalic: false },
-        { id: "usimsa", name: "유심사", logoText: "유심사", logoColor: "#f94b38", logoSize: "16px", isItalic: false },
-        { id: "yeogi", name: "여기어때", logoText: "여기어때", logoColor: "#f7323f", logoSize: "16px", isItalic: false },
-        { id: "yanolja", name: "야놀자", logoText: "야놀자", logoColor: "#ff0055", logoSize: "16px", isItalic: false }
-    ];
+// =========================================================================
 
-    // 각 플랫폼별 표시될 모든 상세 정보
-    const platformData = {
-        "마이리얼트립": {
-            url: "https://myrealtrip.com/123***",
-            productName: "오사카 유니버셜 스튜디오 재팬 입장권<br>(1일권)", // 2p 상품명
-            shortName: "오사카 유니버셜...", // 6p 테이블 상품명
-            reviews: "1,203개 리뷰",
-            oldPrice: "90,000원",
-            discount: "15%",
-            newPrice: "76,500 <span style='font-size:16px;'>원</span>",
-            promo: "상상만 하던 신기한 세계!",
-            shipping: "사전 온라인 구매 필수",
-            blogTitle: "오사카 유니버셜 스튜디오 후기 🚤", // 4p 블로그 제목
-            blogMeta: "일본여행 · 2025.10.17.", // 4p 블로그 카테고리 및 날짜
-            blogBody: "오사카 가면 유니버셜 재팬은 거의 필수 코스인데요. 입장권은 미리 준비하는게 좋아요! 온라인 구매시 조금이라도 저렴하게 구매할 수 있거든요! 저는 공식 홈페이지랑 비교해보고 여기서 구매했어요!", // 4p 블로그 본문
-            richTitle: "오사카 유니버셜 스튜디오 재팬 입장권(1일권)", // 4p 삽입된 링크 썸네일 제목
-            richImgText: "유니버셜 이미지", // 4p 링크 썸네일 박스 텍스트
-            profit: "4,825 원" // 6p 수익 금액
-        },
-        "클룩": {
-            url: "https://kr.klook.com/123***",
-            productName: "도쿄 디즈니랜드 1일 패스포트<br>(QR코드 바로 입장)",
-            shortName: "도쿄 디즈니랜드...",
-            reviews: "2,450개 리뷰",
-            oldPrice: "85,000원",
-            discount: "10%",
-            newPrice: "76,500 <span style='font-size:16px;'>원</span>",
-            promo: "현장 대기 없이 바로 입장!",
-            shipping: "E-티켓 즉시 발송",
-            blogTitle: "도쿄 디즈니랜드 대기 없이 입장하는 법 🏰",
-            blogMeta: "일본여행 · 2025.11.02.",
-            blogBody: "도쿄 여행의 하이라이트! 디즈니랜드 다녀왔어요. 현장에서 표 사려면 줄이 엄청 긴데, 클룩에서 미리 사가니까 QR로 바로 들어갈 수 있어서 너무 편했어요. 할인도 받아서 완전 이득!",
-            richTitle: "도쿄 디즈니랜드 1일 패스포트",
-            richImgText: "디즈니랜드 이미지",
-            profit: "4,200 원"
-        },
-        "오늘의집": {
-            url: "https://ohou.com/123***",
-            productName: "[오늘의집 단독] 코지 패브릭 3인용 소파<br>(오트밀 베이지)",
-            shortName: "코지 패브릭 소파...",
-            reviews: "8,920개 리뷰",
-            oldPrice: "350,000원",
-            discount: "30%",
-            newPrice: "245,000 <span style='font-size:16px;'>원</span>",
-            promo: "감성 인테리어의 완성",
-            shipping: "무료 배송 및 방문 설치",
-            blogTitle: "자취방 인테리어 추천 소파 🛋️",
-            blogMeta: "인테리어 · 2025.09.25.",
-            blogBody: "자취방 거실에 둘 소파를 한참 고민하다가 오늘의집에서 후기가 너무 좋은 이 소파를 샀어요! 푹신하고 색감도 저희 집이랑 찰떡이에요. 지금 세일 중이라 가격도 정말 착해요.",
-            richTitle: "코지 패브릭 3인용 소파 (오트밀 베이지)",
-            richImgText: "소파 이미지",
-            profit: "12,250 원"
-        },
-        "트립닷컴": {
-            url: "https://kr.trip.com/123***",
-            productName: "인천(ICN) - 도쿄 나리타(NRT) 왕복 항공권<br>(이코노미 클래스)",
-            shortName: "도쿄 나리타 항공...",
-            reviews: "5,112개 탑승평",
-            oldPrice: "350,000원",
-            discount: "20%",
-            newPrice: "280,000 <span style='font-size:16px;'>원</span>",
-            promo: "앱 예약 전용 추가 할인",
-            shipping: "E-티켓 (수하물 15kg 포함)",
-            blogTitle: "도쿄 항공권 싸게 끊는 꿀팁 ✈️",
-            blogMeta: "해외여행준비 · 2025.12.10.",
-            blogBody: "도쿄 여행 준비의 첫걸음은 역시 항공권 예약이죠! 스카이스캐너로 비교해보다가 트립닷컴 앱 전용 할인이 제일 저렴해서 바로 발권했어요. 위탁 수하물도 포함되어 있어서 마음 편하네요.",
-            richTitle: "인천-도쿄 왕복 항공권 최저가 예매",
-            richImgText: "항공권 이미지",
-            profit: "5,600 원"
-        },
-        "유심사": {
-            url: "https://usimsa.com/123***",
-            productName: "일본 eSIM 데이터 무제한 (매일 2GB 후 속도제어)<br>3/4/5일",
-            shortName: "일본 eSIM 무제한...",
-            reviews: "12,050개 리뷰",
-            oldPrice: "15,000원",
-            discount: "25%",
-            newPrice: "11,250 <span style='font-size:16px;'>원</span>",
-            promo: "구매 즉시 알림톡 발송!",
-            shipping: "배송비 없음 (QR코드 발급)",
-            blogTitle: "일본 여행 필수템! 유심사 eSIM 후기 📱",
-            blogMeta: "여행준비 · 2025.08.15.",
-            blogBody: "예전에는 포켓 와이파이 들고 다녔는데, 이번엔 친구 추천으로 유심사 eSIM 써봤어요. 유심 교체할 필요 없이 설정만 하면 끝이라 진짜 신세계네요. 데이터도 끊김 없이 잘 터졌습니다!",
-            richTitle: "일본 eSIM 데이터 무제한 플랜",
-            richImgText: "eSIM 이미지",
-            profit: "850 원"
-        },
-        "여기어때": {
-            url: "https://yeogi.com/123***",
-            productName: "제주 신라호텔 (수영장 및 조식 2인 포함)<br>스탠다드 더블",
-            shortName: "제주 신라호텔...",
-            reviews: "4,300개 리뷰",
-            oldPrice: "550,000원",
-            discount: "18%",
-            newPrice: "451,000 <span style='font-size:16px;'>원</span>",
-            promo: "여기어때 단독 쿠폰 적용가",
-            shipping: "모바일 바우처 체크인",
-            blogTitle: "제주 신라호텔 호캉스 다녀왔어요 🏊",
-            blogMeta: "국내여행 · 2025.07.20.",
-            blogBody: "여름 휴가로 다녀온 제주 신라호텔! 역시 이름값 하더라고요. 어덜트 풀에서 밤 수영하면서 먹은 짬뽕은 잊지 못할 맛이에요. 여기어때에서 특가 떠서 저렴하게 잘 다녀왔습니다.",
-            richTitle: "제주 신라호텔 (조식&수영장 포함)",
-            richImgText: "호텔 이미지",
-            profit: "31,570 원"
-        },
-        "야놀자": {
-            url: "https://nol.yanolja.com/123***",
-            productName: "가평 더스테이 풀빌라 펜션<br>(개별 수영장/바베큐)",
-            shortName: "가평 더스테이 풀...",
-            reviews: "1,520개 리뷰",
-            oldPrice: "280,000원",
-            discount: "25%",
-            newPrice: "210,000 <span style='font-size:16px;'>원</span>",
-            promo: "선착순 1만원 추가 할인",
-            shipping: "예약 확정 즉시 문자 발송",
-            blogTitle: "가평 프라이빗 풀빌라 펜션 추천! 💦",
-            blogMeta: "국내여행 · 2025.05.05.",
-            blogBody: "주말에 친구들이랑 가평 풀빌라 다녀왔어요! 우리끼리만 쓸 수 있는 프라이빗 풀이 있어서 눈치 안 보고 엄청 재밌게 놀았습니다. 바베큐장도 깔끔하고 야놀자로 예약해서 싸게 갔어요.",
-            richTitle: "가평 더스테이 풀빌라 펜션",
-            richImgText: "풀빌라 이미지",
-            profit: "14,700 원"
-        }
-    };
+// 👇 직접 문구를 수정할 수 있는 데이터 영역입니다 👇
 
-    // =========================================================================
+// =========================================================================
 
-    let selectedPlatformName = "";
 
-    // 1페이지 플랫폼 버튼 렌더링 함수
-    function renderPlatformButtons() {
-        const container = document.getElementById('platform-btn-container');
-        let html = "";
-        platformList.forEach(p => {
-            const fontStyle = p.isItalic ? "italic" : "normal";
-            const fontWeight = p.isItalic ? "900" : "bold";
-            html += `
-                <button class="btn-outline" onclick="selectPlatform(this, '${p.name}')">
-                    <span class="platform-logo" style="color:${p.logoColor}; font-style:${fontStyle}; font-weight:${fontWeight}; font-size:${p.logoSize};">${p.logoText}</span>
-                    <span>${p.name}</span>
-                </button>
-            `;
-        });
-        container.innerHTML = html;
-    }
 
-    // 문서 로드 시 플랫폼 버튼 렌더링
-    document.addEventListener("DOMContentLoaded", () => {
-        renderPlatformButtons();
-    });
+// 1페이지 플랫폼 버튼 리스트
 
-    function goToPage(pageNum) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(`page-${pageNum}`).classList.add('active');
+const platformList = [
 
-        if(selectedPlatformName && platformData[selectedPlatformName]) {
-            const data = platformData[selectedPlatformName];
+{ id: "myrealtrip", name: "마이리얼트립", logoText: "My", logoColor: "#2563eb", logoSize: "18px", isItalic: true },
 
-            if(pageNum === 2) {
-                document.getElementById('dynamic-product-brand').innerText = selectedPlatformName;
-                document.getElementById('dynamic-url-text').innerText = data.url;
-                document.getElementById('dynamic-product-name').innerHTML = data.productName;
-                document.getElementById('dynamic-product-reviews').innerText = data.reviews;
-                document.getElementById('dynamic-price-original').innerText = data.oldPrice;
-                document.getElementById('dynamic-price-discount').innerText = data.discount;
-                document.getElementById('dynamic-price-final').innerHTML = data.newPrice;
-                document.getElementById('dynamic-product-promo').innerText = data.promo;
-                document.getElementById('dynamic-product-shipping').innerText = data.shipping;
-            }
-            if(pageNum === 4) {
-                // [수정 반영] 블로그 제목을 직접 지정한 문구로 노출
-                document.getElementById('dynamic-blog-title').innerText = data.blogTitle;
-                document.getElementById('dynamic-blog-meta').innerText = data.blogMeta;
-                document.getElementById('dynamic-blog-body').innerText = data.blogBody;
-                document.getElementById('dynamic-rich-desc').innerText = selectedPlatformName;
-                document.getElementById('dynamic-rich-title').innerText = data.richTitle;
-                document.getElementById('dynamic-rich-img-text').innerText = data.richImgText;
-            }
-            if(pageNum === 6) {
-                document.getElementById('final-platform-name').innerText = selectedPlatformName;
-                document.getElementById('final-product-name').innerText = data.shortName;
-                document.getElementById('final-profit').innerText = data.profit;
-            }
-        }
+{ id: "klook", name: "클룩", logoText: "KLOOK", logoColor: "#ff5e1a", logoSize: "18px", isItalic: false },
 
-        if(pageNum === 5) {
-            startProfitAnimation();
-        }
-    }
+{ id: "ohou", name: "오늘의집", logoText: "오늘의집", logoColor: "#35C5F0", logoSize: "16px", isItalic: false },
 
-    function selectPlatform(btn, name) {
-        document.querySelectorAll('#page-1 .btn-outline').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        document.getElementById('btn-next-1').disabled = false;
-        selectedPlatformName = name;
-    }
+{ id: "tripcom", name: "트립닷컴", logoText: "Trip.com", logoColor: "#0f294d", logoSize: "16px", isItalic: false },
 
-    function copyUrl() {
-        const btn = document.getElementById('btn-copy');
-        btn.innerText = '복사완료';
-        btn.classList.add('copied');
-        btn.classList.remove('pulse-effect');
-        
-        btn.style.background = '#e5e7eb';
-        btn.style.color = '#6b7280';
-        
-        document.getElementById('btn-next-2').disabled = false;
-        const toast = document.getElementById('copy-toast');
-        toast.classList.add('show');
-        setTimeout(() => { toast.classList.remove('show'); }, 1000);
-    }
+{ id: "usimsa", name: "유심사", logoText: "유심사", logoColor: "#f94b38", logoSize: "16px", isItalic: false },
 
-    function pasteLink() {
-        const display = document.getElementById('link-display');
-        const btn = document.getElementById('btn-paste');
-        
-        display.innerText = platformData[selectedPlatformName].url;
-        display.style.color = '#374151';
-        btn.classList.remove('pulse-effect');
-        btn.style.background = '#e5e7eb';
-        btn.style.color = '#6b7280';
-        btn.innerText = '붙여넣음';
-        document.getElementById('btn-next-3').disabled = false;
-    }
-    
-    function makeLinkPopup() {
-        const modal = document.getElementById('link-success-modal');
-        modal.classList.add('show');
-        setTimeout(() => {
-            modal.classList.remove('show');
-            goToPage(4);
-        }, 1500);
-    }
+{ id: "yeogi", name: "여기어때", logoText: "여기어때", logoColor: "#f7323f", logoSize: "16px", isItalic: false },
 
-    function insertLinkToPost() {
-        document.getElementById('post-insert-initial').style.display = 'none';
-        document.getElementById('post-insert-zone').classList.add('pasted');
-        document.getElementById('post-rich-card').style.display = 'block';
-        document.getElementById('btn-next-4').disabled = false;
-    }
+{ id: "yanolja", name: "야놀자", logoText: "야놀자", logoColor: "#ff0055", logoSize: "16px", isItalic: false }
 
-    function startProfitAnimation() {
-        for(let i=1; i<=3; i++) {
-            document.getElementById(`step-icon-${i}`).classList.remove('active');
-            document.getElementById(`step-text-${i}`).classList.remove('active');
-        }
-        document.getElementById('step-progress-line').style.width = '0%';
-        document.getElementById('tracking-status').classList.remove('visible');
-        const trackIconSvg = document.getElementById('tracking-icon-svg');
-        trackIconSvg.outerHTML = '<svg class="tracking-icon spin-anim" id="tracking-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>';
-        
-        document.getElementById('tracking-text').innerText = '세시간전이 판매를 확인 중입니다.';
-        
-        setTimeout(() => { 
-            document.getElementById('step-icon-1').classList.add('active'); 
-            document.getElementById('step-text-1').classList.add('active'); 
-            document.getElementById('step-progress-line').style.width = '50%'; 
-        }, 1000);
-        
-        setTimeout(() => { 
-            document.getElementById('step-icon-2').classList.add('active'); 
-            document.getElementById('step-text-2').classList.add('active'); 
-            document.getElementById('step-progress-line').style.width = '100%'; 
-        }, 2000);
-        
-        setTimeout(() => { 
-            document.getElementById('step-icon-3').classList.add('active'); 
-            document.getElementById('step-text-3').classList.add('active'); 
-        }, 3000);
-        
-        setTimeout(() => { document.getElementById('tracking-status').classList.add('visible'); }, 4000);
-        
-        setTimeout(() => {
-            const trackIconSvgNow = document.getElementById('tracking-icon-svg');
-            trackIconSvgNow.outerHTML = '<svg class="tracking-icon" id="tracking-icon-svg" style="color: #82E6C2;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>';
-            
-            document.getElementById('tracking-text').innerText = '구매 추적이 완료됐어요!';
-            setTimeout(() => goToPage(6), 1500); 
-        }, 5000);
-    }
+];
+
+
+
+// 각 플랫폼별 표시될 모든 상세 정보
+
+const platformData = {
+
+"마이리얼트립": {
+
+url: "https://myrealtrip.com/123***",
+
+productName: "오사카 유니버셜 스튜디오 재팬 입장권<br>(1일권)", // 2p 상품명
+
+shortName: "오사카 유니버셜...", // 6p 테이블 상품명
+
+reviews: "1,203개 리뷰",
+
+oldPrice: "90,000원",
+
+discount: "15%",
+
+newPrice: "76,500 <span style='font-size:16px;'>원</span>",
+
+promo: "상상만 하던 신기한 세계!",
+
+shipping: "사전 온라인 구매 필수",
+
+blogTitle: "오사카 유니버셜 스튜디오 후기 🚤", // 4p 블로그 제목
+
+blogMeta: "일본여행 · 2025.10.17.", // 4p 블로그 카테고리 및 날짜
+
+blogBody: "오사카 가면 유니버셜 재팬은 거의 필수 코스인데요. 입장권은 미리 준비하는게 좋아요! 온라인 구매시 조금이라도 저렴하게 구매할 수 있거든요! 저는 공식 홈페이지랑 비교해보고 여기서 구매했어요!", // 4p 블로그 본문
+
+richTitle: "오사카 유니버셜 스튜디오 재팬 입장권(1일권)", // 4p 삽입된 링크 썸네일 제목
+
+richImgText: "유니버셜 이미지", // 4p 링크 썸네일 박스 텍스트
+
+profit: "4,825 원" // 6p 수익 금액
+
+},
+
+"클룩": {
+
+url: "https://kr.klook.com/123***",
+
+productName: "도쿄 디즈니랜드 1일 패스포트<br>(QR코드 바로 입장)",
+
+shortName: "도쿄 디즈니랜드...",
+
+reviews: "2,450개 리뷰",
+
+oldPrice: "85,000원",
+
+discount: "10%",
+
+newPrice: "76,500 <span style='font-size:16px;'>원</span>",
+
+promo: "현장 대기 없이 바로 입장!",
+
+shipping: "E-티켓 즉시 발송",
+
+blogTitle: "도쿄 디즈니랜드 대기 없이 입장하는 법 🏰",
+
+blogMeta: "일본여행 · 2025.11.02.",
+
+blogBody: "도쿄 여행의 하이라이트! 디즈니랜드 다녀왔어요. 현장에서 표 사려면 줄이 엄청 긴데, 클룩에서 미리 사가니까 QR로 바로 들어갈 수 있어서 너무 편했어요. 할인도 받아서 완전 이득!",
+
+richTitle: "도쿄 디즈니랜드 1일 패스포트",
+
+richImgText: "디즈니랜드 이미지",
+
+profit: "4,200 원"
+
+},
+
+"오늘의집": {
+
+url: "https://ohou.com/123***",
+
+productName: "[오늘의집 단독] 코지 패브릭 3인용 소파<br>(오트밀 베이지)",
+
+shortName: "코지 패브릭 소파...",
+
+reviews: "8,920개 리뷰",
+
+oldPrice: "350,000원",
+
+discount: "30%",
+
+newPrice: "245,000 <span style='font-size:16px;'>원</span>",
+
+promo: "감성 인테리어의 완성",
+
+shipping: "무료 배송 및 방문 설치",
+
+blogTitle: "자취방 인테리어 추천 소파 🛋️",
+
+blogMeta: "인테리어 · 2025.09.25.",
+
+blogBody: "자취방 거실에 둘 소파를 한참 고민하다가 오늘의집에서 후기가 너무 좋은 이 소파를 샀어요! 푹신하고 색감도 저희 집이랑 찰떡이에요. 지금 세일 중이라 가격도 정말 착해요.",
+
+richTitle: "코지 패브릭 3인용 소파 (오트밀 베이지)",
+
+richImgText: "소파 이미지",
+
+profit: "12,250 원"
+
+},
+
+"트립닷컴": {
+
+url: "https://kr.trip.com/123***",
+
+productName: "인천(ICN) - 도쿄 나리타(NRT) 왕복 항공권<br>(이코노미 클래스)",
+
+shortName: "도쿄 나리타 항공...",
+
+reviews: "5,112개 탑승평",
+
+oldPrice: "350,000원",
+
+discount: "20%",
+
+newPrice: "280,000 <span style='font-size:16px;'>원</span>",
+
+promo: "앱 예약 전용 추가 할인",
+
+shipping: "E-티켓 (수하물 15kg 포함)",
+
+blogTitle: "도쿄 항공권 싸게 끊는 꿀팁 ✈️",
+
+blogMeta: "해외여행준비 · 2025.12.10.",
+
+blogBody: "도쿄 여행 준비의 첫걸음은 역시 항공권 예약이죠! 스카이스캐너로 비교해보다가 트립닷컴 앱 전용 할인이 제일 저렴해서 바로 발권했어요. 위탁 수하물도 포함되어 있어서 마음 편하네요.",
+
+richTitle: "인천-도쿄 왕복 항공권 최저가 예매",
+
+richImgText: "항공권 이미지",
+
+profit: "5,600 원"
+
+},
+
+"유심사": {
+
+url: "https://usimsa.com/123***",
+
+productName: "일본 eSIM 데이터 무제한 (매일 2GB 후 속도제어)<br>3/4/5일",
+
+shortName: "일본 eSIM 무제한...",
+
+reviews: "12,050개 리뷰",
+
+oldPrice: "15,000원",
+
+discount: "25%",
+
+newPrice: "11,250 <span style='font-size:16px;'>원</span>",
+
+promo: "구매 즉시 알림톡 발송!",
+
+shipping: "배송비 없음 (QR코드 발급)",
+
+blogTitle: "일본 여행 필수템! 유심사 eSIM 후기 📱",
+
+blogMeta: "여행준비 · 2025.08.15.",
+
+blogBody: "예전에는 포켓 와이파이 들고 다녔는데, 이번엔 친구 추천으로 유심사 eSIM 써봤어요. 유심 교체할 필요 없이 설정만 하면 끝이라 진짜 신세계네요. 데이터도 끊김 없이 잘 터졌습니다!",
+
+richTitle: "일본 eSIM 데이터 무제한 플랜",
+
+richImgText: "eSIM 이미지",
+
+profit: "850 원"
+
+},
+
+"여기어때": {
+
+url: "https://yeogi.com/123***",
+
+productName: "제주 신라호텔 (수영장 및 조식 2인 포함)<br>스탠다드 더블",
+
+shortName: "제주 신라호텔...",
+
+reviews: "4,300개 리뷰",
+
+oldPrice: "550,000원",
+
+discount: "18%",
+
+newPrice: "451,000 <span style='font-size:16px;'>원</span>",
+
+promo: "여기어때 단독 쿠폰 적용가",
+
+shipping: "모바일 바우처 체크인",
+
+blogTitle: "제주 신라호텔 호캉스 다녀왔어요 🏊",
+
+blogMeta: "국내여행 · 2025.07.20.",
+
+blogBody: "여름 휴가로 다녀온 제주 신라호텔! 역시 이름값 하더라고요. 어덜트 풀에서 밤 수영하면서 먹은 짬뽕은 잊지 못할 맛이에요. 여기어때에서 특가 떠서 저렴하게 잘 다녀왔습니다.",
+
+richTitle: "제주 신라호텔 (조식&수영장 포함)",
+
+richImgText: "호텔 이미지",
+
+profit: "31,570 원"
+
+},
+
+"야놀자": {
+
+url: "https://nol.yanolja.com/123***",
+
+productName: "가평 더스테이 풀빌라 펜션<br>(개별 수영장/바베큐)",
+
+shortName: "가평 더스테이 풀...",
+
+reviews: "1,520개 리뷰",
+
+oldPrice: "280,000원",
+
+discount: "25%",
+
+newPrice: "210,000 <span style='font-size:16px;'>원</span>",
+
+promo: "선착순 1만원 추가 할인",
+
+shipping: "예약 확정 즉시 문자 발송",
+
+blogTitle: "가평 프라이빗 풀빌라 펜션 추천! 💦",
+
+blogMeta: "국내여행 · 2025.05.05.",
+
+blogBody: "주말에 친구들이랑 가평 풀빌라 다녀왔어요! 우리끼리만 쓸 수 있는 프라이빗 풀이 있어서 눈치 안 보고 엄청 재밌게 놀았습니다. 바베큐장도 깔끔하고 야놀자로 예약해서 싸게 갔어요.",
+
+richTitle: "가평 더스테이 풀빌라 펜션",
+
+richImgText: "풀빌라 이미지",
+
+profit: "14,700 원"
+
+}
+
+};
+
+
+
+// =========================================================================
+
+
+
+let selectedPlatformName = "";
+
+
+
+// 1페이지 플랫폼 버튼 렌더링 함수
+
+function renderPlatformButtons() {
+
+const container = document.getElementById('platform-btn-container');
+
+let html = "";
+
+platformList.forEach(p => {
+
+const fontStyle = p.isItalic ? "italic" : "normal";
+
+const fontWeight = p.isItalic ? "900" : "bold";
+
+html += `
+
+<button class="btn-outline" onclick="selectPlatform(this, '${p.name}')">
+
+<span class="platform-logo" style="color:${p.logoColor}; font-style:${fontStyle}; font-weight:${fontWeight}; font-size:${p.logoSize};">${p.logoText}</span>
+
+<span>${p.name}</span>
+
+</button>
+
+`;
+
+});
+
+container.innerHTML = html;
+
+}
+
+
+
+// 문서 로드 시 플랫폼 버튼 렌더링
+
+document.addEventListener("DOMContentLoaded", () => {
+
+renderPlatformButtons();
+
+});
+
+
+
+function goToPage(pageNum) {
+
+document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+document.getElementById(`page-${pageNum}`).classList.add('active');
+
+
+
+if(selectedPlatformName && platformData[selectedPlatformName]) {
+
+const data = platformData[selectedPlatformName];
+
+
+
+if(pageNum === 2) {
+
+document.getElementById('dynamic-product-brand').innerText = selectedPlatformName;
+
+document.getElementById('dynamic-url-text').innerText = data.url;
+
+document.getElementById('dynamic-product-name').innerHTML = data.productName;
+
+document.getElementById('dynamic-product-reviews').innerText = data.reviews;
+
+document.getElementById('dynamic-price-original').innerText = data.oldPrice;
+
+document.getElementById('dynamic-price-discount').innerText = data.discount;
+
+document.getElementById('dynamic-price-final').innerHTML = data.newPrice;
+
+document.getElementById('dynamic-product-promo').innerText = data.promo;
+
+document.getElementById('dynamic-product-shipping').innerText = data.shipping;
+
+}
+
+if(pageNum === 4) {
+
+// [수정 반영] 블로그 제목을 직접 지정한 문구로 노출
+
+document.getElementById('dynamic-blog-title').innerText = data.blogTitle;
+
+document.getElementById('dynamic-blog-meta').innerText = data.blogMeta;
+
+document.getElementById('dynamic-blog-body').innerText = data.blogBody;
+
+document.getElementById('dynamic-rich-desc').innerText = selectedPlatformName;
+
+document.getElementById('dynamic-rich-title').innerText = data.richTitle;
+
+document.getElementById('dynamic-rich-img-text').innerText = data.richImgText;
+
+}
+
+if(pageNum === 6) {
+
+document.getElementById('final-platform-name').innerText = selectedPlatformName;
+
+document.getElementById('final-product-name').innerText = data.shortName;
+
+document.getElementById('final-profit').innerText = data.profit;
+
+}
+
+}
+
+
+
+if(pageNum === 5) {
+
+startProfitAnimation();
+
+}
+
+}
+
+
+
+function selectPlatform(btn, name) {
+
+document.querySelectorAll('#page-1 .btn-outline').forEach(b => b.classList.remove('selected'));
+
+btn.classList.add('selected');
+
+document.getElementById('btn-next-1').disabled = false;
+
+selectedPlatformName = name;
+
+}
+
+
+
+function copyUrl() {
+
+const btn = document.getElementById('btn-copy');
+
+btn.innerText = '복사완료';
+
+btn.classList.add('copied');
+
+btn.classList.remove('pulse-effect');
+
+
+btn.style.background = '#e5e7eb';
+
+btn.style.color = '#6b7280';
+
+
+document.getElementById('btn-next-2').disabled = false;
+
+const toast = document.getElementById('copy-toast');
+
+toast.classList.add('show');
+
+setTimeout(() => { toast.classList.remove('show'); }, 1000);
+
+}
+
+
+
+function pasteLink() {
+
+const display = document.getElementById('link-display');
+
+const btn = document.getElementById('btn-paste');
+
+
+display.innerText = platformData[selectedPlatformName].url;
+
+display.style.color = '#374151';
+
+btn.classList.remove('pulse-effect');
+
+btn.style.background = '#e5e7eb';
+
+btn.style.color = '#6b7280';
+
+btn.innerText = '붙여넣음';
+
+document.getElementById('btn-next-3').disabled = false;
+
+}
+
+
+function makeLinkPopup() {
+
+const modal = document.getElementById('link-success-modal');
+
+modal.classList.add('show');
+
+setTimeout(() => {
+
+modal.classList.remove('show');
+
+goToPage(4);
+
+}, 1500);
+
+}
+
+
+
+function insertLinkToPost() {
+
+document.getElementById('post-insert-initial').style.display = 'none';
+
+document.getElementById('post-insert-zone').classList.add('pasted');
+
+document.getElementById('post-rich-card').style.display = 'block';
+
+document.getElementById('btn-next-4').disabled = false;
+
+}
+
+
+
+function startProfitAnimation() {
+
+for(let i=1; i<=3; i++) {
+
+document.getElementById(`step-icon-${i}`).classList.remove('active');
+
+document.getElementById(`step-text-${i}`).classList.remove('active');
+
+}
+
+document.getElementById('step-progress-line').style.width = '0%';
+
+document.getElementById('tracking-status').classList.remove('visible');
+
+const trackIconSvg = document.getElementById('tracking-icon-svg');
+
+trackIconSvg.outerHTML = '<svg class="tracking-icon spin-anim" id="tracking-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>';
+
+
+document.getElementById('tracking-text').innerText = '세시간전이 판매를 확인 중입니다.';
+
+
+setTimeout(() => {
+
+document.getElementById('step-icon-1').classList.add('active');
+
+document.getElementById('step-text-1').classList.add('active');
+
+document.getElementById('step-progress-line').style.width = '50%';
+
+}, 1000);
+
+
+setTimeout(() => {
+
+document.getElementById('step-icon-2').classList.add('active');
+
+document.getElementById('step-text-2').classList.add('active');
+
+document.getElementById('step-progress-line').style.width = '100%';
+
+}, 2000);
+
+
+setTimeout(() => {
+
+document.getElementById('step-icon-3').classList.add('active');
+
+document.getElementById('step-text-3').classList.add('active');
+
+}, 3000);
+
+
+setTimeout(() => { document.getElementById('tracking-status').classList.add('visible'); }, 4000);
+
+
+setTimeout(() => {
+
+const trackIconSvgNow = document.getElementById('tracking-icon-svg');
+
+trackIconSvgNow.outerHTML = '<svg class="tracking-icon" id="tracking-icon-svg" style="color: #82E6C2;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>';
+
+
+document.getElementById('tracking-text').innerText = '구매 추적이 완료됐어요!';
+
+setTimeout(() => goToPage(6), 1500);
+
+}, 5000);
+
+}
+
 </script>
 
-</body>
-</html>
 
-[수정 요청사항]
-첨부한 듀오링고 이미지와 같이 변경해줘
-모바일, 웹 모두 듀오링고 같이 백그라운드가 어둡고(투명도도 동일하게), 해당 화면 부분만 흰색으로 둥글게, 그리고 버튼 사이즈, 각 컴포넌트 여백 및 디자인 등등 완전히 동일하게 만들어줘.
+
+</body>
+
+</html>
