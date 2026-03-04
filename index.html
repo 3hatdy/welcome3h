@@ -7,37 +7,39 @@
 <style>
     /* 기본 초기화 및 폰트 설정 */
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
-    body { background-color: #f4f5f7; display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; }
     
-    /* 1. 모바일 친화적 레이아웃 최적화 */
-    #app { width: 100%; max-width: 420px; height: 100vh; height: 100dvh; background-color: #fff; position: relative; overflow-y: auto; overflow-x: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+    /* [수정] 배경색 전체 흰색으로 변경 & 모바일 컨테이너 제한 해제(웹 최적화) */
+    body { background-color: #fff; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; min-height: 100dvh; }
+    #app { width: 100%; max-width: 600px; /* 기존 420px에서 웹 보기 편하게 약간 확대 */ min-height: 100vh; min-height: 100dvh; background-color: #fff; position: relative; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; }
     
     /* 공통 페이지 스타일 */
-    .page { display: none; flex-direction: column; width: 100%; min-height: 100%; padding: 20px 20px 30px 20px; }
+    /* [수정] 상하 패딩 축소 및 상단 밀착을 위해 justify-content 조정 */
+    .page { display: none; flex-direction: column; justify-content: flex-start; width: 100%; min-height: 100%; padding: 15px 20px; }
     .page.active { display: flex; }
     
     /* 상단 네비게이션 & 프로그레스 바 */
-    /* [레이아웃 수정] 여백 축소 */
-    .header { display: flex; align-items: center; margin-bottom: 20px; margin-top: 10px; flex-shrink: 0; }
+    /* [수정] 여백 대폭 축소 */
+    .header { display: flex; align-items: center; margin-bottom: 10px; flex-shrink: 0; }
     .back-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; cursor: pointer; margin-right: 10px; margin-left: -5px; }
     .progress-bar { flex-grow: 1; height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden; }
     .progress-fill { height: 100%; background-color: #5CBBCC; border-radius: 4px; transition: width 0.3s ease; }
 
     /* 타이틀 및 텍스트 */
-    /* [레이아웃 수정] 타이틀 아래 여백 축소 */
-    .title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #111827; line-height: 1.4; flex-shrink: 0; }
-    .subtitle { text-align: center; font-size: 14px; color: #6b7280; margin-bottom: 20px; }
+    /* [수정] 타이틀/서브타이틀 아래 여백 최소화 */
+    .title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #111827; line-height: 1.4; flex-shrink: 0; }
+    .subtitle { text-align: center; font-size: 14px; color: #6b7280; margin-bottom: 10px; }
 
     /* 하단 고정 버튼 영역 */
-    .bottom-area { margin-top: auto; padding-top: 20px; flex-shrink: 0; }
+    /* [수정] margin-top: auto 를 유지하되 패딩 축소 */
+    .bottom-area { margin-top: auto; padding-top: 15px; flex-shrink: 0; }
     .btn { width: 100%; padding: 14px; border-radius: 8px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; transition: 0.2s; }
     .btn-primary { background-color: #5CBBCC; color: white; }
     .btn-primary:active { background-color: #4aa5b5; }
     .btn-primary:disabled { background-color: #ccecf1; cursor: not-allowed; }
     
     /* 2페이지 플랫폼 선택 버튼 */
-    /* [레이아웃 수정] 버튼 간격 축소 */
-    .btn-outline { width: 90%; margin: 0 auto 10px auto; background-color: white; border: 1px solid #dcdcdc; color: #333; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 15px; font-size: 16px; font-weight: 600; flex-shrink: 0; }
+    /* [수정] 버튼 간격 및 사이즈 조정 */
+    .btn-outline { width: 100%; max-width: 380px; margin: 0 auto 8px auto; background-color: white; border: 1px solid #dcdcdc; color: #333; border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 15px; font-size: 15px; font-weight: 600; flex-shrink: 0; }
     .btn-outline.selected { border-color: #5CBBCC; background-color: rgba(92, 187, 204, 0.05); }
     .platform-logo { font-size: 18px; font-style: italic; font-weight: 900; }
 
@@ -50,68 +52,67 @@
     .pulse-effect { animation: pulse 1.5s infinite; }
 
     /* 3페이지 링크 복사/상품 상세 */
-    /* [레이아웃 수정] 하단 여백 축소 */
-    .mock-product { border: 1px solid #e5e7eb; border-radius: 12px; padding: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; background: #fff; margin-bottom: 10px; flex-shrink: 0; }
-    .url-pill-container { padding: 15px 15px 0 15px; }
+    /* [수정] 하단 여백 및 패딩 최소화 */
+    .mock-product { border: 1px solid #e5e7eb; border-radius: 12px; padding: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; background: #fff; margin-bottom: 10px; flex-shrink: 0; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .url-pill-container { padding: 10px 15px 0 15px; }
     
-    .url-pill { display: flex; justify-content: space-between; align-items: center; background-color: #fff; border: 1.5px solid #5CBBCC; border-radius: 30px; padding: 5px 5px 5px 20px; height: 50px; }
-    .url-text { font-size: 14px; color: #5CBBCC; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; font-weight: 500; }
+    .url-pill { display: flex; justify-content: space-between; align-items: center; background-color: #fff; border: 1.5px solid #5CBBCC; border-radius: 30px; padding: 5px 5px 5px 20px; height: 46px; }
+    .url-text { font-size: 13px; color: #5CBBCC; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; font-weight: 500; }
     
-    .copy-btn { background: #5CBBCC; color: #fff; border: none; padding: 0 20px; height: 38px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; white-space: nowrap; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .copy-btn { background: #5CBBCC; color: #fff; border: none; padding: 0 16px; height: 34px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; white-space: nowrap; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
     .copy-btn.copied { background: #e0e0e0 !important; color: #666 !important; animation: none; transform: scale(1); box-shadow: none; border: none; }
     
-    .product-details { padding: 15px; }
-    .product-brand { font-size: 11px; color: #888; margin-bottom: 4px; display: block; }
-    .product-name { font-size: 15px; font-weight: bold; margin-bottom: 8px; line-height: 1.3; color: #333; }
-    .product-rating { font-size: 11px; color: #f59e0b; margin-bottom: 12px; }
+    .product-details { padding: 12px 15px; }
+    .product-brand { font-size: 11px; color: #888; margin-bottom: 2px; display: block; }
+    .product-name { font-size: 14px; font-weight: bold; margin-bottom: 6px; line-height: 1.3; color: #333; }
+    .product-rating { font-size: 11px; color: #f59e0b; margin-bottom: 10px; }
     .product-rating span { color: #888; margin-left: 4px; }
-    .product-image-mock { width: 100%; height: 160px; background: #e2e8f0; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; color: #94a3b8; font-size: 14px; text-align: center; padding: 10px; }
-    .product-price-row { margin-bottom: 10px; }
-    .price-original { font-size: 12px; color: #9ca3af; text-decoration: line-through; display: block; margin-bottom: 2px; }
-    .price-discount { font-size: 18px; font-weight: bold; color: #ef4444; margin-right: 6px; }
-    .price-final { font-size: 20px; font-weight: 800; color: #111827; }
-    .product-promo { background: #fef3c7; color: #b45309; font-size: 11px; padding: 6px 10px; border-radius: 4px; display: inline-block; margin-bottom: 10px; font-weight: 500; }
-    .product-shipping { font-size: 11px; color: #6b7280; margin-bottom: 15px; }
-    .product-btn-group { display: flex; gap: 8px; }
-    .product-btn-group button { flex: 1; padding: 10px; border-radius: 6px; border: none; font-size: 13px; font-weight: bold; }
+    .product-price-row { margin-bottom: 8px; }
+    .price-original { font-size: 11px; color: #9ca3af; text-decoration: line-through; display: block; margin-bottom: 2px; }
+    .price-discount { font-size: 16px; font-weight: bold; color: #ef4444; margin-right: 6px; }
+    .price-final { font-size: 18px; font-weight: 800; color: #111827; }
+    .product-promo { background: #fef3c7; color: #b45309; font-size: 11px; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px; font-weight: 500; }
+    .product-shipping { font-size: 11px; color: #6b7280; margin-bottom: 10px; }
+    .product-btn-group { display: flex; gap: 6px; }
+    .product-btn-group button { flex: 1; padding: 8px; border-radius: 6px; border: none; font-size: 12px; font-weight: bold; }
     .btn-cart { background: #f1f5f9; color: #475569; }
     .btn-buy { background: #ccecf1; color: #5CBBCC; }
 
     /* 페이지 4 링크 붙여넣기 유도 */
-    /* [레이아웃 수정] 상단 여백 축소 */
-    .input-box { display: flex; align-items: center; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; padding: 8px 8px 8px 15px; margin-top: 15px; }
-    .input-text { flex-grow: 1; color: #9ca3af; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .paste-btn { background: #5CBBCC; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; white-space: nowrap; flex-shrink: 0; text-align: center; min-width: 75px; }
+    /* [수정] 여백 축소 */
+    .input-box { display: flex; align-items: center; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; padding: 6px 8px 6px 15px; margin-top: 10px; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .input-text { flex-grow: 1; color: #9ca3af; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .paste-btn { background: #5CBBCC; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; flex-shrink: 0; text-align: center; min-width: 65px; }
     
     /* 포스팅 페이지 */
-    /* [레이아웃 수정] 상단 여백 축소 */
-    .mock-post { border: 1px solid #e5e7eb; border-radius: 0; padding: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background: white; margin-top: 5px; overflow: hidden; flex-shrink: 0; }
-    .naver-header-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #f3f4f6; }
-    .naver-logo-area { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: bold; color: #333; }
-    .naver-n-icon { background: #03C75A; color: white; width: 18px; height: 18px; border-radius: 2px; display: flex; justify-content: center; align-items: center; font-size: 12px; font-style: italic; font-weight: 900; }
+    /* [수정] 상하 여백 및 패딩 최소화 */
+    .mock-post { border: 1px solid #e5e7eb; border-radius: 0; padding: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background: white; margin-top: 5px; overflow: hidden; flex-shrink: 0; width: 100%; max-width: 420px; margin-left: auto; margin-right: auto; }
+    .naver-header-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid #f3f4f6; }
+    .naver-logo-area { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: bold; color: #333; }
+    .naver-n-icon { background: #03C75A; color: white; width: 16px; height: 16px; border-radius: 2px; display: flex; justify-content: center; align-items: center; font-size: 11px; font-style: italic; font-weight: 900; }
     .naver-divider { color: #d1d5db; font-weight: normal; margin: 0 2px; }
     .naver-blog-name { color: #6b7280; font-weight: normal; }
-    .naver-right-icons svg { width: 18px; height: 18px; color: #6b7280; margin-left: 10px; }
-    .naver-content { padding: 20px 15px; }
-    .naver-title { font-size: 16px; font-weight: bold; color: #111827; margin-bottom: 8px; line-height: 1.4; }
-    .naver-meta { font-size: 12px; color: #9ca3af; margin-bottom: 20px; }
-    .naver-body-text { font-size: 13px; color: #374151; line-height: 1.6; margin-bottom: 20px; }
+    .naver-right-icons svg { width: 16px; height: 16px; color: #6b7280; margin-left: 8px; }
+    .naver-content { padding: 12px; }
+    .naver-title { font-size: 15px; font-weight: bold; color: #111827; margin-bottom: 6px; line-height: 1.4; }
+    .naver-meta { font-size: 11px; color: #9ca3af; margin-bottom: 10px; }
+    .naver-body-text { font-size: 12px; color: #374151; line-height: 1.5; margin-bottom: 15px; }
     
     /* 포스팅 내 링크 삽입 점선 박스 */
-    .insert-zone { position: relative; border-radius: 8px; border: 2px dashed #d1d5db; background-color: #f9fafb; padding: 25px 15px; text-align: center; transition: all 0.3s; }
+    .insert-zone { position: relative; border-radius: 8px; border: 2px dashed #d1d5db; background-color: #f9fafb; padding: 15px; text-align: center; transition: all 0.3s; }
     .insert-zone.pasted { border-color: #5CBBCC; background-color: rgba(92, 187, 204, 0.05); padding: 0; border-style: solid; text-align: left; }
-    .insert-zone-initial svg { width: 28px; height: 28px; color: #9ca3af; margin: 0 auto 10px auto; display: block; }
-    .insert-zone-initial div { color: #6b7280; margin-bottom: 15px; font-size: 13px; }
-    .paste-link-button { display: inline-block; font-weight: bold; border-radius: 6px; padding: 10px 16px; background-color: #ccecf1; color: #5CBBCC; border: none; font-size: 13px; cursor: pointer; }
+    .insert-zone-initial svg { width: 24px; height: 24px; color: #9ca3af; margin: 0 auto 8px auto; display: block; }
+    .insert-zone-initial div { color: #6b7280; margin-bottom: 10px; font-size: 12px; }
+    .paste-link-button { display: inline-block; font-weight: bold; border-radius: 6px; padding: 8px 14px; background-color: #ccecf1; color: #5CBBCC; border: none; font-size: 12px; cursor: pointer; }
     
-    .post-rich-card { display: none; padding: 12px; }
-    .post-rich-img { width: 100%; height: 140px; background: #e2e8f0; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; color: #94a3b8; font-size: 12px; text-align: center; padding: 10px; }
-    .post-rich-text { font-size: 14px; font-weight: bold; color: #111827; line-height: 1.3; margin-bottom: 5px; }
-    .post-rich-desc { font-size: 12px; color: #6b7280; }
+    .post-rich-card { display: none; padding: 10px; }
+    .post-rich-img { width: 100%; height: 100px; background: #e2e8f0; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; color: #94a3b8; font-size: 11px; text-align: center; padding: 10px; }
+    .post-rich-text { font-size: 13px; font-weight: bold; color: #111827; line-height: 1.3; margin-bottom: 4px; }
+    .post-rich-desc { font-size: 11px; color: #6b7280; }
 
     /* 3단계 로딩 애니메이션 */
-    /* [레이아웃 수정] 상단 여백 축소 */
-    .progress-steps-container { display: flex; align-items: flex-start; justify-content: space-between; width: 100%; position: relative; margin-top: 20px; padding: 0 10px; }
+    /* [수정] 상단 여백 제거 및 컨테이너 간격 최소화 */
+    .progress-steps-container { display: flex; align-items: flex-start; justify-content: space-between; width: 100%; max-width: 400px; margin: 10px auto; position: relative; padding: 0 10px; }
     .progress-line-bg { position: absolute; top: 1.5rem; left: 15%; width: 70%; height: 3px; background-color: #e5e7eb; transform: translateY(-50%); z-index: 0; }
     .progress-line-fg { height: 3px; background-color: #82E6C2; width: 0%; transition: width 1s ease-in-out; }
     .step-item { display: flex; flex-direction: column; align-items: center; z-index: 10; text-align: center; width: 33.33%; }
@@ -119,25 +120,25 @@
     .step-icon-wrapper.active { border-color: #82E6C2; transform: scale(1); }
     .step-icon { width: 1.2rem; height: 1.2rem; color: #9ca3af; transition: color 0.5s; margin: 0; }
     .step-icon-wrapper.active .step-icon { color: #82E6C2; }
-    .step-text { margin-top: 10px; font-weight: 600; font-size: 11px; color: #374151; opacity: 0.5; transform: translateY(10px); transition: opacity 0.5s, transform 0.5s; word-break: keep-all; line-height: 1.3; }
+    .step-text { margin-top: 8px; font-weight: 600; font-size: 11px; color: #374151; opacity: 0.5; transform: translateY(5px); transition: opacity 0.5s, transform 0.5s; word-break: keep-all; line-height: 1.2; }
     .step-text.active { opacity: 1; transform: translateY(0); }
-    .tracking-status { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; font-weight: bold; color: #374151; opacity: 0; transition: opacity 0.5s; margin-top: 30px; }
+    .tracking-status { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; font-weight: bold; color: #374151; opacity: 0; transition: opacity 0.5s; margin-top: 20px; }
     .tracking-status.visible { opacity: 1; }
     .tracking-icon { width: 1.2rem; height: 1.2rem; color: #5CBBCC; margin: 0; }
     .spin-anim { animation: spin 1s linear infinite; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
     /* 수익 테이블 */
-    .profit-table { width: 100%; border-collapse: collapse; font-size: 13px; border-top: 1px solid #e5e7eb; }
-    .profit-table th, .profit-table td { padding: 12px 10px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+    .profit-table { width: 100%; max-width: 400px; margin: 0 auto; border-collapse: collapse; font-size: 13px; border-top: 1px solid #e5e7eb; }
+    .profit-table th, .profit-table td { padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: left; }
     .profit-table th { background: #f9fafb; color: #6b7280; font-weight: 600; }
     .text-green { color: #10b981; font-weight: bold; }
     
     /* 6페이지 하단 버튼 디자인 */
     .btn-secondary-solid { background-color: #e5e7eb; color: #4b5563; }
     .btn-secondary-solid:active { background-color: #d1d5db; }
-    .result-btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-    .result-btn-group .btn { border-radius: 20px; font-size: 15px; padding: 16px; }
+    .result-btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .result-btn-group .btn { border-radius: 20px; font-size: 14px; padding: 14px; }
 
     /* 토스트 팝업 */
     .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(51, 51, 51, 0.9); color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: bold; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 999; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
@@ -146,11 +147,11 @@
     /* 모달 */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
     .modal-overlay.show { opacity: 1; pointer-events: auto; }
-    .modal-content { background: white; padding: 40px 30px; border-radius: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; max-width: 300px; width: 90%; transform: translateY(20px); transition: transform 0.3s ease; }
+    .modal-content { background: white; padding: 30px 20px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; max-width: 280px; width: 90%; transform: translateY(20px); transition: transform 0.3s ease; }
     .modal-overlay.show .modal-content { transform: translateY(0); }
-    .modal-icon { width: 48px; height: 48px; margin: 0 auto 20px auto; color: #75ce7c; } 
-    .modal-title { font-size: 18px; font-weight: bold; color: #111827; margin-bottom: 15px; letter-spacing: -0.5px; }
-    .modal-desc { font-size: 14px; color: #6b7280; }
+    .modal-icon { width: 40px; height: 40px; margin: 0 auto 15px auto; color: #75ce7c; } 
+    .modal-title { font-size: 16px; font-weight: bold; color: #111827; margin-bottom: 10px; letter-spacing: -0.5px; }
+    .modal-desc { font-size: 13px; color: #6b7280; }
 </style>
 </head>
 <body>
@@ -158,9 +159,10 @@
 <div id="app">
     
     <div class="page active" id="page-0">
-        <div style="text-align: center; margin-top: 40px; font-weight: 900; color:#5CBBCC; font-size: 22px; letter-spacing: -1px;">세시간전</div>
-        <div class="hero-img" style="background: transparent; margin: 30px auto 20px auto; width: 240px; height: auto;">
-            <img src="Group 7033.png" alt="플랫폼 아이콘 일러스트" style="width: 100%; height: auto; object-fit: contain;">
+        <div style="text-align: center; margin-top: 10px; font-weight: 900; color:#5CBBCC; font-size: 20px; letter-spacing: -1px;">세시간전</div>
+        <div class="hero-img" style="background: transparent; margin: 15px auto 10px auto; width: 200px; height: auto;">
+            <!-- 이미지 깨짐 방지를 위해 임시 플레이스홀더를 사용합니다 -->
+            <img src="https://placehold.co/400x300/e0f2f1/5CBBCC?text=Illustration" alt="플랫폼 아이콘 일러스트" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px;">
         </div>
         <div class="title" style="margin-bottom: 5px;">누구나 쉽게 시작하는 블로그 수익!</div>
         <div class="subtitle">이렇게 시작해 보세요!</div>
@@ -176,7 +178,7 @@
             </div>
             <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
         </div>
-        <div class="title" style="margin-bottom: 20px;">이용해본 플랫폼이 있나요?</div>
+        <div class="title" style="margin-bottom: 15px;">이용해본 플랫폼이 있나요?</div>
         
         <div id="platform-btn-container"></div>
         
@@ -192,7 +194,7 @@
             </div>
             <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
         </div>
-        <div class="title" style="margin-bottom: 15px;">상품페이지 링크(URL)를 복사하세요</div>
+        <div class="title" style="margin-bottom: 10px;">상품페이지 링크(URL)를 복사하세요</div>
         
         <div class="mock-product">
             <div class="url-pill-container">
@@ -232,9 +234,9 @@
             <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
         </div>
         
-        <div style="margin-top: 30px;">
-            <div class="title" style="margin-bottom: 30px;">상품 링크를 나만의 제휴링크로 만들어요!</div>
-            <div style="text-align:center; font-size: 14px; font-weight:bold; color: #374151;">상품링크</div>
+        <div>
+            <div class="title" style="margin-bottom: 15px;">상품 링크를 나만의 제휴링크로 만들어요!</div>
+            <div style="text-align:center; font-size: 13px; font-weight:bold; color: #374151;">상품링크</div>
             <div class="input-box">
                 <div class="input-text" id="link-display">복사한 링크를 붙여넣어주세요.</div>
                 <button class="paste-btn pulse-effect" id="btn-paste" onclick="pasteLink()">붙여넣기</button>
@@ -253,7 +255,7 @@
             </div>
             <div class="progress-bar"><div class="progress-fill" style="width: 80%;"></div></div>
         </div>
-        <div class="title" style="margin-bottom: 10px;">포스팅에 제휴링크를<br>삽입해 보세요</div>
+        <div class="title" style="margin-bottom: 5px;">포스팅에 제휴링크를<br>삽입해 보세요</div>
         <div class="mock-post">
             <div class="naver-header-bar">
                 <div class="naver-logo-area">
@@ -288,7 +290,7 @@
     </div>
 
     <div class="page" id="page-5">
-        <div style="text-align:center; margin-top:40px;">
+        <div>
             <div class="title">구매를 기다리고 있어요</div>
             <div class="subtitle">세시간전 시스템이 판매 과정을 추적하고 있습니다</div>
         </div>
@@ -319,8 +321,8 @@
             <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
         </div>
         
-        <div style="margin-top: 10px;">
-            <div class="title" style="margin-bottom: 20px;">포스팅에 링크 한 줄만 추가해서,<br>수익이 발생했어요! 🎉</div>
+        <div>
+            <div class="title" style="margin-bottom: 15px;">포스팅에 링크 한 줄만 추가해서,<br>수익이 발생했어요! 🎉</div>
             <table class="profit-table">
                 <thead><tr><th>프로그램</th><th>상품명</th><th>수익 금액</th></tr></thead>
                 <tbody>
@@ -534,7 +536,6 @@
                 document.getElementById('dynamic-product-shipping').innerText = data.shipping;
             }
             if(pageNum === 4) {
-                // [수정 반영] 블로그 제목을 직접 지정한 문구로 노출
                 document.getElementById('dynamic-blog-title').innerText = data.blogTitle;
                 document.getElementById('dynamic-blog-meta').innerText = data.blogMeta;
                 document.getElementById('dynamic-blog-body').innerText = data.blogBody;
