@@ -8,37 +8,40 @@
     /* 기본 초기화 및 폰트 설정 */
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
     
-    /* [수정] 배경색 전체 흰색으로 변경 & 모바일 컨테이너 제한 해제(웹 최적화) */
-    body { background-color: #fff; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; min-height: 100dvh; }
-    #app { width: 100%; max-width: 600px; /* 기존 420px에서 웹 보기 편하게 약간 확대 */ min-height: 100vh; min-height: 100dvh; background-color: #fff; position: relative; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; }
+    /* [수정] 배경색 흰색, 웹 화면 중앙 정렬을 위한 최적화 */
+    body { background-color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; margin: 0; }
+    
+    /* [수정] 중앙 컨테이너 크기 및 가운데 정렬 최적화 */
+    #app { width: 100%; max-width: 600px; height: 100vh; max-height: 1000px; background-color: #fff; position: relative; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; margin: auto; }
     
     /* 공통 페이지 스타일 */
-    /* [수정] 상하 패딩 축소 및 상단 밀착을 위해 justify-content 조정 */
-    .page { display: none; flex-direction: column; justify-content: flex-start; width: 100%; min-height: 100%; padding: 15px 20px; }
+    .page { display: none; flex-direction: column; justify-content: flex-start; width: 100%; height: 100%; padding: 20px 20px; }
     .page.active { display: flex; }
     
     /* 상단 네비게이션 & 프로그레스 바 */
-    /* [수정] 여백 대폭 축소 */
-    .header { display: flex; align-items: center; margin-bottom: 10px; flex-shrink: 0; }
+    .header { display: flex; align-items: center; margin-bottom: 30px; flex-shrink: 0; width: 100%; max-width: 480px; margin-left: auto; margin-right: auto; }
     .back-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; cursor: pointer; margin-right: 10px; margin-left: -5px; }
     .progress-bar { flex-grow: 1; height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden; }
     .progress-fill { height: 100%; background-color: #5CBBCC; border-radius: 4px; transition: width 0.3s ease; }
 
+    /* 콘텐츠를 감싸는 내부 컨테이너 (중앙 정렬용) */
+    .content-wrapper { width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+
     /* 타이틀 및 텍스트 */
-    /* [수정] 타이틀/서브타이틀 아래 여백 최소화 */
-    .title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #111827; line-height: 1.4; flex-shrink: 0; }
-    .subtitle { text-align: center; font-size: 14px; color: #6b7280; margin-bottom: 10px; }
+    .title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #111827; line-height: 1.4; flex-shrink: 0; width: 100%; }
+    .subtitle { text-align: center; font-size: 14px; color: #6b7280; margin-bottom: 10px; width: 100%; }
 
     /* 하단 고정 버튼 영역 */
-    /* [수정] margin-top: auto 를 유지하되 패딩 축소 */
-    .bottom-area { margin-top: auto; padding-top: 15px; flex-shrink: 0; }
-    .btn { width: 100%; padding: 14px; border-radius: 8px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; transition: 0.2s; }
+    /* [수정] 하단 버튼 중앙 정렬 및 여백 조정 */
+    .bottom-area { margin-top: auto; padding-top: 20px; flex-shrink: 0; width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
+    
+    /* [수정] 버튼 사이즈: 세로 1.5배(padding 증가), 가로 0.6배(width 제한) */
+    .btn { width: 60%; max-width: 360px; padding: 21px; border-radius: 8px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; transition: 0.2s; }
     .btn-primary { background-color: #5CBBCC; color: white; }
     .btn-primary:active { background-color: #4aa5b5; }
     .btn-primary:disabled { background-color: #ccecf1; cursor: not-allowed; }
     
     /* 2페이지 플랫폼 선택 버튼 */
-    /* [수정] 버튼 간격 및 사이즈 조정 */
     .btn-outline { width: 100%; max-width: 380px; margin: 0 auto 8px auto; background-color: white; border: 1px solid #dcdcdc; color: #333; border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 15px; font-size: 15px; font-weight: 600; flex-shrink: 0; }
     .btn-outline.selected { border-color: #5CBBCC; background-color: rgba(92, 187, 204, 0.05); }
     .platform-logo { font-size: 18px; font-style: italic; font-weight: 900; }
@@ -52,7 +55,6 @@
     .pulse-effect { animation: pulse 1.5s infinite; }
 
     /* 3페이지 링크 복사/상품 상세 */
-    /* [수정] 하단 여백 및 패딩 최소화 */
     .mock-product { border: 1px solid #e5e7eb; border-radius: 12px; padding: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; background: #fff; margin-bottom: 10px; flex-shrink: 0; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }
     .url-pill-container { padding: 10px 15px 0 15px; }
     
@@ -62,11 +64,12 @@
     .copy-btn { background: #5CBBCC; color: #fff; border: none; padding: 0 16px; height: 34px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; white-space: nowrap; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
     .copy-btn.copied { background: #e0e0e0 !important; color: #666 !important; animation: none; transform: scale(1); box-shadow: none; border: none; }
     
-    .product-details { padding: 12px 15px; }
+    .product-details { padding: 12px 15px; text-align: left; }
     .product-brand { font-size: 11px; color: #888; margin-bottom: 2px; display: block; }
     .product-name { font-size: 14px; font-weight: bold; margin-bottom: 6px; line-height: 1.3; color: #333; }
     .product-rating { font-size: 11px; color: #f59e0b; margin-bottom: 10px; }
     .product-rating span { color: #888; margin-left: 4px; }
+    .product-image-mock { width: 100%; height: 160px; background: #e2e8f0; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; color: #94a3b8; font-size: 14px; text-align: center; padding: 10px; }
     .product-price-row { margin-bottom: 8px; }
     .price-original { font-size: 11px; color: #9ca3af; text-decoration: line-through; display: block; margin-bottom: 2px; }
     .price-discount { font-size: 16px; font-weight: bold; color: #ef4444; margin-right: 6px; }
@@ -79,14 +82,12 @@
     .btn-buy { background: #ccecf1; color: #5CBBCC; }
 
     /* 페이지 4 링크 붙여넣기 유도 */
-    /* [수정] 여백 축소 */
     .input-box { display: flex; align-items: center; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; padding: 6px 8px 6px 15px; margin-top: 10px; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }
-    .input-text { flex-grow: 1; color: #9ca3af; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .input-text { flex-grow: 1; color: #9ca3af; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
     .paste-btn { background: #5CBBCC; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; flex-shrink: 0; text-align: center; min-width: 65px; }
     
     /* 포스팅 페이지 */
-    /* [수정] 상하 여백 및 패딩 최소화 */
-    .mock-post { border: 1px solid #e5e7eb; border-radius: 0; padding: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background: white; margin-top: 5px; overflow: hidden; flex-shrink: 0; width: 100%; max-width: 420px; margin-left: auto; margin-right: auto; }
+    .mock-post { border: 1px solid #e5e7eb; border-radius: 0; padding: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background: white; margin-top: 5px; overflow: hidden; flex-shrink: 0; width: 100%; max-width: 420px; margin-left: auto; margin-right: auto; text-align: left; }
     .naver-header-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid #f3f4f6; }
     .naver-logo-area { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: bold; color: #333; }
     .naver-n-icon { background: #03C75A; color: white; width: 16px; height: 16px; border-radius: 2px; display: flex; justify-content: center; align-items: center; font-size: 11px; font-style: italic; font-weight: 900; }
@@ -111,7 +112,6 @@
     .post-rich-desc { font-size: 11px; color: #6b7280; }
 
     /* 3단계 로딩 애니메이션 */
-    /* [수정] 상단 여백 제거 및 컨테이너 간격 최소화 */
     .progress-steps-container { display: flex; align-items: flex-start; justify-content: space-between; width: 100%; max-width: 400px; margin: 10px auto; position: relative; padding: 0 10px; }
     .progress-line-bg { position: absolute; top: 1.5rem; left: 15%; width: 70%; height: 3px; background-color: #e5e7eb; transform: translateY(-50%); z-index: 0; }
     .progress-line-fg { height: 3px; background-color: #82E6C2; width: 0%; transition: width 1s ease-in-out; }
@@ -122,7 +122,7 @@
     .step-icon-wrapper.active .step-icon { color: #82E6C2; }
     .step-text { margin-top: 8px; font-weight: 600; font-size: 11px; color: #374151; opacity: 0.5; transform: translateY(5px); transition: opacity 0.5s, transform 0.5s; word-break: keep-all; line-height: 1.2; }
     .step-text.active { opacity: 1; transform: translateY(0); }
-    .tracking-status { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; font-weight: bold; color: #374151; opacity: 0; transition: opacity 0.5s; margin-top: 20px; }
+    .tracking-status { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; font-weight: bold; color: #374151; opacity: 0; transition: opacity 0.5s; margin-top: 20px; width: 100%; }
     .tracking-status.visible { opacity: 1; }
     .tracking-icon { width: 1.2rem; height: 1.2rem; color: #5CBBCC; margin: 0; }
     .spin-anim { animation: spin 1s linear infinite; }
@@ -135,10 +135,11 @@
     .text-green { color: #10b981; font-weight: bold; }
     
     /* 6페이지 하단 버튼 디자인 */
+    /* [수정] 결과 페이지 버튼 그룹 중앙 정렬 및 너비 조정 */
+    .result-btn-group { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; width: 100%; }
     .btn-secondary-solid { background-color: #e5e7eb; color: #4b5563; }
     .btn-secondary-solid:active { background-color: #d1d5db; }
-    .result-btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; max-width: 400px; margin-left: auto; margin-right: auto; }
-    .result-btn-group .btn { border-radius: 20px; font-size: 14px; padding: 14px; }
+    .result-btn-group .btn { border-radius: 20px; font-size: 14px; padding: 16px; width: 60%; max-width: 360px; }
 
     /* 토스트 팝업 */
     .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(51, 51, 51, 0.9); color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: bold; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 999; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
@@ -159,13 +160,14 @@
 <div id="app">
     
     <div class="page active" id="page-0">
-        <div style="text-align: center; margin-top: 10px; font-weight: 900; color:#5CBBCC; font-size: 20px; letter-spacing: -1px;">세시간전</div>
-        <div class="hero-img" style="background: transparent; margin: 15px auto 10px auto; width: 200px; height: auto;">
-            <!-- 이미지 깨짐 방지를 위해 임시 플레이스홀더를 사용합니다 -->
-            <img src="https://placehold.co/400x300/e0f2f1/5CBBCC?text=Illustration" alt="플랫폼 아이콘 일러스트" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px;">
+        <div class="content-wrapper" style="margin-top: 40px;">
+            <div style="text-align: center; font-weight: 900; color:#5CBBCC; font-size: 20px; letter-spacing: -1px;">세시간전</div>
+            <div class="hero-img" style="background: transparent; margin: 15px auto 10px auto; width: 200px; height: auto;">
+                <img src="Group 7033.png" alt="플랫폼 아이콘 일러스트" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px;">
+            </div>
+            <div class="title" style="margin-bottom: 5px;">누구나 쉽게 시작하는 블로그 수익!</div>
+            <div class="subtitle">이렇게 시작해 보세요!</div>
         </div>
-        <div class="title" style="margin-bottom: 5px;">누구나 쉽게 시작하는 블로그 수익!</div>
-        <div class="subtitle">이렇게 시작해 보세요!</div>
         <div class="bottom-area">
             <button class="btn btn-primary" onclick="goToPage(1)">시작하기</button>
         </div>
@@ -178,10 +180,10 @@
             </div>
             <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
         </div>
-        <div class="title" style="margin-bottom: 15px;">이용해본 플랫폼이 있나요?</div>
-        
-        <div id="platform-btn-container"></div>
-        
+        <div class="content-wrapper">
+            <div class="title" style="margin-bottom: 15px;">이용해본 플랫폼이 있나요?</div>
+            <div id="platform-btn-container" style="width: 100%;"></div>
+        </div>
         <div class="bottom-area">
             <button class="btn btn-primary" id="btn-next-1" onclick="goToPage(2)" disabled>계속하기</button>
         </div>
@@ -194,33 +196,33 @@
             </div>
             <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
         </div>
-        <div class="title" style="margin-bottom: 10px;">상품페이지 링크(URL)를 복사하세요</div>
-        
-        <div class="mock-product">
-            <div class="url-pill-container">
-                <div class="url-pill">
-                    <span class="url-text" id="dynamic-url-text"></span>
-                    <button class="copy-btn pulse-effect" id="btn-copy" onclick="copyUrl()">복사하기</button>
+        <div class="content-wrapper">
+            <div class="title" style="margin-bottom: 10px;">상품페이지 링크(URL)를 복사하세요</div>
+            <div class="mock-product">
+                <div class="url-pill-container">
+                    <div class="url-pill">
+                        <span class="url-text" id="dynamic-url-text"></span>
+                        <button class="copy-btn pulse-effect" id="btn-copy" onclick="copyUrl()">복사하기</button>
+                    </div>
                 </div>
-            </div>
-            <div class="product-details">
-                <span class="product-brand" id="dynamic-product-brand"></span>
-                <div class="product-name" id="dynamic-product-name"></div>
-                <div class="product-rating">⭐⭐⭐⭐⭐ <span id="dynamic-product-reviews"></span></div>
-                <div class="product-price-row">
-                    <span class="price-original" id="dynamic-price-original"></span>
-                    <span class="price-discount" id="dynamic-price-discount"></span>
-                    <span class="price-final" id="dynamic-price-final"></span>
-                </div>
-                <div class="product-promo" id="dynamic-product-promo"></div>
-                <div class="product-shipping" id="dynamic-product-shipping"></div>
-                <div class="product-btn-group">
-                    <button class="btn-cart">장바구니</button>
-                    <button class="btn-buy">바로구매</button>
+                <div class="product-details">
+                    <span class="product-brand" id="dynamic-product-brand"></span>
+                    <div class="product-name" id="dynamic-product-name"></div>
+                    <div class="product-rating">⭐⭐⭐⭐⭐ <span id="dynamic-product-reviews"></span></div>
+                    <div class="product-price-row">
+                        <span class="price-original" id="dynamic-price-original"></span>
+                        <span class="price-discount" id="dynamic-price-discount"></span>
+                        <span class="price-final" id="dynamic-price-final"></span>
+                    </div>
+                    <div class="product-promo" id="dynamic-product-promo"></div>
+                    <div class="product-shipping" id="dynamic-product-shipping"></div>
+                    <div class="product-btn-group">
+                        <button class="btn-cart">장바구니</button>
+                        <button class="btn-buy">바로구매</button>
+                    </div>
                 </div>
             </div>
         </div>
-        
         <div class="bottom-area">
             <button class="btn btn-primary" id="btn-next-2" onclick="goToPage(3)" disabled>계속하기</button>
         </div>
@@ -233,16 +235,14 @@
             </div>
             <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
         </div>
-        
-        <div>
+        <div class="content-wrapper" style="margin-top: 20px;">
             <div class="title" style="margin-bottom: 15px;">상품 링크를 나만의 제휴링크로 만들어요!</div>
-            <div style="text-align:center; font-size: 13px; font-weight:bold; color: #374151;">상품링크</div>
+            <div style="text-align:center; font-size: 13px; font-weight:bold; color: #374151; width: 100%;">상품링크</div>
             <div class="input-box">
                 <div class="input-text" id="link-display">복사한 링크를 붙여넣어주세요.</div>
                 <button class="paste-btn pulse-effect" id="btn-paste" onclick="pasteLink()">붙여넣기</button>
             </div>
         </div>
-
         <div class="bottom-area">
             <button class="btn btn-primary" id="btn-next-3" onclick="makeLinkPopup()" disabled>제휴링크 만들기</button>
         </div>
@@ -255,31 +255,33 @@
             </div>
             <div class="progress-bar"><div class="progress-fill" style="width: 80%;"></div></div>
         </div>
-        <div class="title" style="margin-bottom: 5px;">포스팅에 제휴링크를<br>삽입해 보세요</div>
-        <div class="mock-post">
-            <div class="naver-header-bar">
-                <div class="naver-logo-area">
-                    <div class="naver-n-icon">N</div> Blog <span class="naver-divider">|</span> <span class="naver-blog-name">내 블로그</span>
-                </div>
-                <div class="naver-right-icons">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
-                </div>
-            </div>
-            <div class="naver-content">
-                <div class="naver-title" id="dynamic-blog-title"></div>
-                <div class="naver-meta" id="dynamic-blog-meta"></div>
-                <div class="naver-body-text" id="dynamic-blog-body"></div>
-                <div class="insert-zone" id="post-insert-zone">
-                    <div class="insert-zone-initial" id="post-insert-initial">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                        <div>여기에 제휴 링크를 삽입해보세요</div>
-                        <button class="paste-link-button" onclick="insertLinkToPost()">🔗 제휴링크 붙여넣기</button>
+        <div class="content-wrapper">
+            <div class="title" style="margin-bottom: 5px;">포스팅에 제휴링크를<br>삽입해 보세요</div>
+            <div class="mock-post">
+                <div class="naver-header-bar">
+                    <div class="naver-logo-area">
+                        <div class="naver-n-icon">N</div> Blog <span class="naver-divider">|</span> <span class="naver-blog-name">내 블로그</span>
                     </div>
-                    <div class="post-rich-card" id="post-rich-card">
-                        <div class="post-rich-img" id="dynamic-rich-img-text"></div>
-                        <div class="post-rich-text" id="dynamic-rich-title"></div>
-                        <div class="post-rich-desc" id="dynamic-rich-desc"></div>
+                    <div class="naver-right-icons">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+                    </div>
+                </div>
+                <div class="naver-content">
+                    <div class="naver-title" id="dynamic-blog-title"></div>
+                    <div class="naver-meta" id="dynamic-blog-meta"></div>
+                    <div class="naver-body-text" id="dynamic-blog-body"></div>
+                    <div class="insert-zone" id="post-insert-zone">
+                        <div class="insert-zone-initial" id="post-insert-initial">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                            <div>여기에 제휴 링크를 삽입해보세요</div>
+                            <button class="paste-link-button" onclick="insertLinkToPost()">🔗 제휴링크 붙여넣기</button>
+                        </div>
+                        <div class="post-rich-card" id="post-rich-card">
+                            <div class="post-rich-img" id="dynamic-rich-img-text"></div>
+                            <div class="post-rich-text" id="dynamic-rich-title"></div>
+                            <div class="post-rich-desc" id="dynamic-rich-desc"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -290,28 +292,29 @@
     </div>
 
     <div class="page" id="page-5">
-        <div>
+        <div class="content-wrapper" style="margin-top: 30px;">
             <div class="title">구매를 기다리고 있어요</div>
             <div class="subtitle">세시간전 시스템이 판매 과정을 추적하고 있습니다</div>
-        </div>
-        <div class="progress-steps-container">
-            <div class="progress-line-bg"><div class="progress-line-fg" id="step-progress-line"></div></div>
-            <div class="step-item">
-                <div class="step-icon-wrapper" id="step-icon-1"><svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></div>
-                <div class="step-text" id="step-text-1">방문자가<br>콘텐츠를 봤어요!</div>
+            
+            <div class="progress-steps-container">
+                <div class="progress-line-bg"><div class="progress-line-fg" id="step-progress-line"></div></div>
+                <div class="step-item">
+                    <div class="step-icon-wrapper" id="step-icon-1"><svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></div>
+                    <div class="step-text" id="step-text-1">방문자가<br>콘텐츠를 봤어요!</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon-wrapper" id="step-icon-2"><svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9l5 12 1.8-5.2L21 14l-4.3-4.3L9 9z"></path><path d="M11.7 2.3c-.4-.4-.8-.7-1.3-.7C4.8 1.6 2 4.4 2 9.8c0 2 .5 3.8 1.2 5.2.1.2.2.4.3.6l.3.6c.2.4.4.8.7 1.1l.4.5c.3.4.6.8.9 1.1l.5.5c.3.3.6.6.9.8l.4.3c.3.2.6.4.9.6.2.1.4.3.6.4.3.2.6.3.9.5.3.1.6.3.9.4.2.1.4.1.6.2.3.1.6.1.9-.1.3-.1.6-.1.9-.2.2 0 .4-.1.6-.2.3-.1.6-.3.9-.4.3-.1.6-.3.9-.5.2-.1.4-.3.6-.4.3-.2.6-.4.9-.6l.4-.3c.3-.2.6-.5.9-.8l.5-.5c.3-.3.6-.7.9-1.1l.4-.5c.3-.4.6-.8.7-1.1l.3-.6c.1-.2.2-.4.3-.6.7-1.4 1.2-3.2 1.2-5.2 0-5.4-2.8-8.2-8.4-8.2-.5 0-1 .3-1.3.7Z"></path></svg></div>
+                    <div class="step-text" id="step-text-2">제휴링크<br>클릭 발생!</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon-wrapper" id="step-icon-3"><svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg></div>
+                    <div class="step-text" id="step-text-3">누군가 상품을<br>구매했어요!</div>
+                </div>
             </div>
-            <div class="step-item">
-                <div class="step-icon-wrapper" id="step-icon-2"><svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9l5 12 1.8-5.2L21 14l-4.3-4.3L9 9z"></path><path d="M11.7 2.3c-.4-.4-.8-.7-1.3-.7C4.8 1.6 2 4.4 2 9.8c0 2 .5 3.8 1.2 5.2.1.2.2.4.3.6l.3.6c.2.4.4.8.7 1.1l.4.5c.3.4.6.8.9 1.1l.5.5c.3.3.6.6.9.8l.4.3c.3.2.6.4.9.6.2.1.4.3.6.4.3.2.6.3.9.5.3.1.6.3.9.4.2.1.4.1.6.2.3.1.6.1.9-.1.3-.1.6-.1.9-.2.2 0 .4-.1.6-.2.3-.1.6-.3.9-.4.3-.1.6-.3.9-.5.2-.1.4-.3.6-.4.3-.2.6-.4.9-.6l.4-.3c.3-.2.6-.5.9-.8l.5-.5c.3-.3.6-.7.9-1.1l.4-.5c.3-.4.6-.8.7-1.1l.3-.6c.1-.2.2-.4.3-.6.7-1.4 1.2-3.2 1.2-5.2 0-5.4-2.8-8.2-8.4-8.2-.5 0-1 .3-1.3.7Z"></path></svg></div>
-                <div class="step-text" id="step-text-2">제휴링크<br>클릭 발생!</div>
+            <div class="tracking-status" id="tracking-status">
+                <svg class="tracking-icon spin-anim" id="tracking-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                <span id="tracking-text">세시간전이 판매를 확인 중입니다.</span>
             </div>
-            <div class="step-item">
-                <div class="step-icon-wrapper" id="step-icon-3"><svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg></div>
-                <div class="step-text" id="step-text-3">누군가 상품을<br>구매했어요!</div>
-            </div>
-        </div>
-        <div class="tracking-status" id="tracking-status">
-            <svg class="tracking-icon spin-anim" id="tracking-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
-            <span id="tracking-text">세시간전이 판매를 확인 중입니다.</span>
         </div>
     </div>
 
@@ -321,8 +324,8 @@
             <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
         </div>
         
-        <div>
-            <div class="title" style="margin-bottom: 15px;">포스팅에 링크 한 줄만 추가해서,<br>수익이 발생했어요! 🎉</div>
+        <div class="content-wrapper" style="margin-top: 10px;">
+            <div class="title" style="margin-bottom: 20px;">포스팅에 링크 한 줄만 추가해서,<br>수익이 발생했어요! 🎉</div>
             <table class="profit-table">
                 <thead><tr><th>프로그램</th><th>상품명</th><th>수익 금액</th></tr></thead>
                 <tbody>
@@ -536,6 +539,7 @@
                 document.getElementById('dynamic-product-shipping').innerText = data.shipping;
             }
             if(pageNum === 4) {
+                // [수정 반영] 블로그 제목을 직접 지정한 문구로 노출
                 document.getElementById('dynamic-blog-title').innerText = data.blogTitle;
                 document.getElementById('dynamic-blog-meta').innerText = data.blogMeta;
                 document.getElementById('dynamic-blog-body').innerText = data.blogBody;
@@ -649,3 +653,7 @@
 
 </body>
 </html>
+
+[수정 요청사항]
+첨부한 듀오링고 이미지와 같이 변경해줘
+모바일, 웹 모두 듀오링고 같이 백그라운드가 어둡고(투명도도 동일하게), 해당 화면 부분만 흰색으로 둥글게, 그리고 버튼 사이즈, 각 컴포넌트 여백 및 디자인 등등 완전히 동일하게 만들어줘.
