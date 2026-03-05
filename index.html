@@ -160,7 +160,7 @@ body { background-color: #fff; display: flex; justify-content: center; align-ite
 <div class="content-wrapper" style="margin-top: 40px;">
 <div style="text-align: center; font-weight: 900; color:#5CBBCC; font-size: 20px; letter-spacing: -1px;">세시간전</div>
 <div class="hero-img" style="background: transparent; margin: 15px auto 10px auto; width: 200px; height: auto;">
-<img src="https://placehold.co/400x300/e0f2f1/5CBBCC?text=Illustration" alt="플랫폼 아이콘 일러스트" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px;">
+<img src="https://raw.githubusercontent.com/3hatdy/my-assets/main/main_image.png" alt="메인 일러스트" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px;">
 </div>
 <div class="title" style="margin-bottom: 5px;">누구나 쉽게 시작하는 블로그 수익!</div>
 <div class="subtitle">이렇게 시작해 보세요!</div>
@@ -206,6 +206,7 @@ body { background-color: #fff; display: flex; justify-content: center; align-ite
 <span class="product-brand" id="dynamic-product-brand"></span>
 <div class="product-name" id="dynamic-product-name"></div>
 <div class="product-rating">⭐⭐⭐⭐⭐ <span id="dynamic-product-reviews"></span></div>
+<div class="product-image-mock" id="dynamic-product-image"></div>
 <div class="product-price-row">
 <span class="price-original" id="dynamic-price-original"></span>
 <span class="price-discount" id="dynamic-price-discount"></span>
@@ -357,35 +358,35 @@ body { background-color: #fff; display: flex; justify-content: center; align-ite
 // 👇 직접 문구를 수정할 수 있는 데이터 영역입니다 👇
 // =========================================================================
 
-// 1페이지 플랫폼 버튼 리스트
+// 1페이지 플랫폼 버튼 리스트 (GitHub 에셋 이미지 연동)
 const platformList = [
-{ id: "myrealtrip", name: "마이리얼트립", logoText: "My", logoColor: "#2563eb", logoSize: "18px", isItalic: true },
-{ id: "klook", name: "클룩", logoText: "KLOOK", logoColor: "#ff5e1a", logoSize: "18px", isItalic: false },
-{ id: "ohou", name: "오늘의집", logoText: "오늘의집", logoColor: "#35C5F0", logoSize: "16px", isItalic: false },
-{ id: "tripcom", name: "트립닷컴", logoText: "Trip.com", logoColor: "#0f294d", logoSize: "16px", isItalic: false },
-{ id: "usimsa", name: "유심사", logoText: "유심사", logoColor: "#f94b38", logoSize: "16px", isItalic: false },
-{ id: "yeogi", name: "여기어때", logoText: "여기어때", logoColor: "#f7323f", logoSize: "16px", isItalic: false },
-{ id: "yanolja", name: "야놀자", logoText: "야놀자", logoColor: "#ff0055", logoSize: "16px", isItalic: false }
+{ id: "myrealtrip", name: "마이리얼트립", logoUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/mrt_logo.png" },
+{ id: "klook", name: "클룩", logoUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/klook_logo.png" },
+{ id: "ohou", name: "오늘의집", logoUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/oh_logo.png" },
+{ id: "tripcom", name: "트립닷컴", logoUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/trip_logo.png" },
+{ id: "usimsa", name: "유심사", logoUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/usimsa_logo.png" },
+{ id: "yeogi", name: "여기어때", logoUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/yeogi_logo.png" },
+{ id: "yanolja", name: "야놀자", logoUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/nol_logo.png" }
 ];
 
-// 각 플랫폼별 표시될 모든 상세 정보
+// 각 플랫폼별 표시될 모든 상세 정보 (GitHub 에셋 이미지 연동)
 const platformData = {
 "마이리얼트립": {
 url: "https://myrealtrip.com/123***",
-productName: "오사카 유니버셜 스튜디오 재팬 입장권<br>(1일권)", // 2p 상품명
-shortName: "오사카 유니버셜...", // 6p 테이블 상품명
+productName: "오사카 유니버셜 스튜디오 재팬 입장권<br>(1일권)",
+shortName: "오사카 유니버셜...",
 reviews: "1,203개 리뷰",
 oldPrice: "90,000원",
 discount: "15%",
 newPrice: "76,500 <span style='font-size:16px;'>원</span>",
 promo: "상상만 하던 신기한 세계!",
 shipping: "사전 온라인 구매 필수",
-blogTitle: "오사카 유니버셜 스튜디오 후기 🚤", // 4p 블로그 제목
-blogMeta: "일본여행 · 2025.10.17.", // 4p 블로그 카테고리 및 날짜
-blogBody: "오사카 가면 유니버셜 재팬은 거의 필수 코스인데요. 입장권은 미리 준비하는게 좋아요! 온라인 구매시 조금이라도 저렴하게 구매할 수 있거든요! 저는 공식 홈페이지랑 비교해보고 여기서 구매했어요!", // 4p 블로그 본문
-richTitle: "오사카 유니버셜 스튜디오 재팬 입장권(1일권)", // 4p 삽입된 링크 썸네일 제목
-richImgText: "유니버셜 이미지", // 4p 링크 썸네일 박스 텍스트
-profit: "4,825 원" // 6p 수익 금액
+blogTitle: "오사카 유니버셜 스튜디오 후기 🚤",
+blogMeta: "일본여행 · 2025.10.17.",
+blogBody: "오사카 가면 유니버셜 재팬은 거의 필수 코스인데요. 입장권은 미리 준비하는게 좋아요! 온라인 구매시 조금이라도 저렴하게 구매할 수 있거든요! 저는 공식 홈페이지랑 비교해보고 여기서 구매했어요!",
+richTitle: "오사카 유니버셜 스튜디오 재팬 입장권(1일권)",
+productImgUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/mrt_image.png", // 미리보기 이미지 추가
+profit: "4,825 원"
 },
 "클룩": {
 url: "https://kr.klook.com/123***",
@@ -401,7 +402,7 @@ blogTitle: "도쿄 디즈니랜드 대기 없이 입장하는 법 🏰",
 blogMeta: "일본여행 · 2025.11.02.",
 blogBody: "도쿄 여행의 하이라이트! 디즈니랜드 다녀왔어요. 현장에서 표 사려면 줄이 엄청 긴데, 클룩에서 미리 사가니까 QR로 바로 들어갈 수 있어서 너무 편했어요. 할인도 받아서 완전 이득!",
 richTitle: "도쿄 디즈니랜드 1일 패스포트",
-richImgText: "디즈니랜드 이미지",
+productImgUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/klook_image.png",
 profit: "4,200 원"
 },
 "오늘의집": {
@@ -418,7 +419,7 @@ blogTitle: "자취방 인테리어 추천 소파 🛋️",
 blogMeta: "인테리어 · 2025.09.25.",
 blogBody: "자취방 거실에 둘 소파를 한참 고민하다가 오늘의집에서 후기가 너무 좋은 이 소파를 샀어요! 푹신하고 색감도 저희 집이랑 찰떡이에요. 지금 세일 중이라 가격도 정말 착해요.",
 richTitle: "코지 패브릭 3인용 소파 (오트밀 베이지)",
-richImgText: "소파 이미지",
+productImgUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/oh_image.png",
 profit: "12,250 원"
 },
 "트립닷컴": {
@@ -435,7 +436,7 @@ blogTitle: "도쿄 항공권 싸게 끊는 꿀팁 ✈️",
 blogMeta: "해외여행준비 · 2025.12.10.",
 blogBody: "도쿄 여행 준비의 첫걸음은 역시 항공권 예약이죠! 스카이스캐너로 비교해보다가 트립닷컴 앱 전용 할인이 제일 저렴해서 바로 발권했어요. 위탁 수하물도 포함되어 있어서 마음 편하네요.",
 richTitle: "인천-도쿄 왕복 항공권 최저가 예매",
-richImgText: "항공권 이미지",
+productImgUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/trip_image.png",
 profit: "5,600 원"
 },
 "유심사": {
@@ -452,7 +453,7 @@ blogTitle: "일본 여행 필수템! 유심사 eSIM 후기 📱",
 blogMeta: "여행준비 · 2025.08.15.",
 blogBody: "예전에는 포켓 와이파이 들고 다녔는데, 이번엔 친구 추천으로 유심사 eSIM 써봤어요. 유심 교체할 필요 없이 설정만 하면 끝이라 진짜 신세계네요. 데이터도 끊김 없이 잘 터졌습니다!",
 richTitle: "일본 eSIM 데이터 무제한 플랜",
-richImgText: "eSIM 이미지",
+productImgUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/usimsa_image.png",
 profit: "850 원"
 },
 "여기어때": {
@@ -469,7 +470,7 @@ blogTitle: "제주 신라호텔 호캉스 다녀왔어요 🏊",
 blogMeta: "국내여행 · 2025.07.20.",
 blogBody: "여름 휴가로 다녀온 제주 신라호텔! 역시 이름값 하더라고요. 어덜트 풀에서 밤 수영하면서 먹은 짬뽕은 잊지 못할 맛이에요. 여기어때에서 특가 떠서 저렴하게 잘 다녀왔습니다.",
 richTitle: "제주 신라호텔 (조식&수영장 포함)",
-richImgText: "호텔 이미지",
+productImgUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/yeogi_image.png",
 profit: "31,570 원"
 },
 "야놀자": {
@@ -486,7 +487,7 @@ blogTitle: "가평 프라이빗 풀빌라 펜션 추천! 💦",
 blogMeta: "국내여행 · 2025.05.05.",
 blogBody: "주말에 친구들이랑 가평 풀빌라 다녀왔어요! 우리끼리만 쓸 수 있는 프라이빗 풀이 있어서 눈치 안 보고 엄청 재밌게 놀았습니다. 바베큐장도 깔끔하고 야놀자로 예약해서 싸게 갔어요.",
 richTitle: "가평 더스테이 풀빌라 펜션",
-richImgText: "풀빌라 이미지",
+productImgUrl: "https://raw.githubusercontent.com/3hatdy/my-assets/main/nol_image.png",
 profit: "14,700 원"
 }
 };
@@ -500,11 +501,11 @@ function renderPlatformButtons() {
 const container = document.getElementById('platform-btn-container');
 let html = "";
 platformList.forEach(p => {
-const fontStyle = p.isItalic ? "italic" : "normal";
-const fontWeight = p.isItalic ? "900" : "bold";
 html += `
 <button class="btn-outline" onclick="selectPlatform(this, '${p.name}')">
-<span class="platform-logo" style="color:${p.logoColor}; font-style:${fontStyle}; font-weight:${fontWeight}; font-size:${p.logoSize};">${p.logoText}</span>
+<div style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+<img src="${p.logoUrl}" alt="${p.name} 로고" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px;">
+</div>
 <span>${p.name}</span>
 </button>
 `;
@@ -534,6 +535,13 @@ document.getElementById('dynamic-price-discount').innerText = data.discount;
 document.getElementById('dynamic-price-final').innerHTML = data.newPrice;
 document.getElementById('dynamic-product-promo').innerText = data.promo;
 document.getElementById('dynamic-product-shipping').innerText = data.shipping;
+
+// [수정 반영] 3페이지 상품 이미지 처리
+const productImgDiv = document.getElementById('dynamic-product-image');
+if(productImgDiv) {
+productImgDiv.style.background = `url(${data.productImgUrl}) center/cover no-repeat`;
+productImgDiv.innerText = "";
+}
 }
 if(pageNum === 4) {
 // [수정 반영] 블로그 제목을 직접 지정한 문구로 노출
@@ -542,7 +550,13 @@ document.getElementById('dynamic-blog-meta').innerText = data.blogMeta;
 document.getElementById('dynamic-blog-body').innerText = data.blogBody;
 document.getElementById('dynamic-rich-desc').innerText = selectedPlatformName;
 document.getElementById('dynamic-rich-title').innerText = data.richTitle;
-document.getElementById('dynamic-rich-img-text').innerText = data.richImgText;
+
+// [수정 반영] 포스팅 삽입 이미지 처리
+const richImgDiv = document.getElementById('dynamic-rich-img-text');
+if(richImgDiv) {
+richImgDiv.style.background = `url(${data.productImgUrl}) center/cover no-repeat`;
+richImgDiv.innerText = "";
+}
 }
 if(pageNum === 6) {
 document.getElementById('final-platform-name').innerText = selectedPlatformName;
