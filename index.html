@@ -25,7 +25,8 @@ body { background-color: #fff; display: flex; justify-content: center; align-ite
 .progress-fill { height: 100%; background-color: #5CBBCC; border-radius: 4px; transition: width 0.3s ease; }
 
 /* 콘텐츠를 감싸는 내부 컨테이너 (중앙 정렬용) */
-.content-wrapper { width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+/* [수정] 상하단 여백 균형을 위해 margin: auto 적용 */
+.content-wrapper { width: 100%; max-width: 480px; margin: auto; display: flex; flex-direction: column; align-items: center; }
 
 /* 타이틀 및 텍스트 */
 .title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #111827; line-height: 1.4; flex-shrink: 0; width: 100%; }
@@ -157,8 +158,10 @@ body { background-color: #fff; display: flex; justify-content: center; align-ite
 <div id="app">
 
 <div class="page active" id="page-0">
-<div class="content-wrapper" style="margin-top: 40px;">
-<div style="text-align: center; font-weight: 900; color:#5CBBCC; font-size: 20px; letter-spacing: -1px;">세시간전</div>
+<div class="content-wrapper">
+<div style="text-align: center; margin-bottom: 5px;">
+<img src="https://raw.githubusercontent.com/3hatdy/my-assets/main/%EC%84%B8%EC%8B%9C%EA%B0%84%EC%A0%84%20%EB%A1%9C%EA%B3%A0%20%EB%88%84%EB%81%BC.png" alt="세시간전 로고" style="height: 28px; width: auto; object-fit: contain;">
+</div>
 <div class="hero-img" style="background: transparent; margin: 15px auto 10px auto; width: 200px; height: auto;">
 <img src="https://raw.githubusercontent.com/3hatdy/my-assets/main/main_image.png" alt="메인 일러스트" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px;">
 </div>
@@ -203,10 +206,10 @@ body { background-color: #fff; display: flex; justify-content: center; align-ite
 </div>
 </div>
 <div class="product-details">
+<div class="product-image-mock" id="dynamic-product-image"></div>
 <span class="product-brand" id="dynamic-product-brand"></span>
 <div class="product-name" id="dynamic-product-name"></div>
 <div class="product-rating">⭐⭐⭐⭐⭐ <span id="dynamic-product-reviews"></span></div>
-<div class="product-image-mock" id="dynamic-product-image"></div>
 <div class="product-price-row">
 <span class="price-original" id="dynamic-price-original"></span>
 <span class="price-discount" id="dynamic-price-discount"></span>
@@ -233,7 +236,7 @@ body { background-color: #fff; display: flex; justify-content: center; align-ite
 </div>
 <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
 </div>
-<div class="content-wrapper" style="margin-top: 20px;">
+<div class="content-wrapper">
 <div class="title" style="margin-bottom: 15px;">상품 링크를 나만의 제휴링크로 만들어요!</div>
 <div style="text-align:center; font-size: 13px; font-weight:bold; color: #374151; width: 100%;">상품링크</div>
 <div class="input-box">
@@ -322,7 +325,7 @@ body { background-color: #fff; display: flex; justify-content: center; align-ite
 <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
 </div>
 
-<div class="content-wrapper" style="margin-top: 10px;">
+<div class="content-wrapper">
 <div class="title" style="margin-bottom: 20px;">포스팅에 링크 한 줄만 추가해서,<br>수익이 발생했어요! 🎉</div>
 <table class="profit-table">
 <thead><tr><th>프로그램</th><th>상품명</th><th>수익 금액</th></tr></thead>
