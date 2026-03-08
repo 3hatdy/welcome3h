@@ -147,7 +147,8 @@ body { background-color: #fff; display: flex; justify-content: center; align-ite
 .result-btn-group { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; width: 100%; position: relative; }
 .btn-secondary-solid { display: flex; justify-content: center; align-items: center; gap: 6px; background-color: #e5e7eb; color: #4b5563; }
 .btn-secondary-solid:active { background-color: #d1d5db; }
-.result-btn-group .btn { border-radius: 20px; font-size: 14px; padding: 16px; width: 60%; max-width: 360px; }
+/* [수정] 버튼 높이를 키우고, 라운드를 카카오페이 스타일처럼 완만하게 변경 */
+.result-btn-group .btn { border-radius: 20px; font-size: 14px; padding: 18px; width: 60%; max-width: 360px; }
 
 /* 토스트 팝업 */
 .toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(51, 51, 51, 0.9); color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: bold; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 999; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
@@ -190,7 +191,8 @@ body { background-color: #fff; display: flex; justify-content: center; align-ite
 
 /* [수정] 6페이지 결과 툴팁 디자인: 말풍선 꼬리 제거 및 위치/아이콘 조정 */
 .result-tooltip { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); background-color: #ffffff; border: 1.5px solid #5CBBCC; border-radius: 20px; padding: 4px 12px; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 10; white-space: nowrap; }
-.result-tooltip-text { font-size: 12px; font-weight: bold; color: #333; }
+/* [수정] 서브 문구 굵기를 bold에서 500으로 조절 */
+.result-tooltip-text { font-size: 12px; font-weight: 500; color: #333; }
 .result-tooltip-icon { background-color: #5CBBCC; width: 14px; height: 14px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
 .result-tooltip-icon svg { width: 9px; height: 9px; stroke-width: 4; stroke: #ffffff; }
 
