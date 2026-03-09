@@ -166,7 +166,7 @@ body { background-color: #fff; display: flex; justify-content: center; align-ite
 .modal-desc { font-size: 13px; color: #6b7280; margin: 0; }
 
 /* =========================================
-   추가된 스타일: 6페이지 꿀팁 토글 영역 
+   추가된 스타일: 6페이지 꿀팁 토글 영역 
 ========================================= */
 .tip-content-container { display: none; width: 90%; max-width: 360px; margin-top: 4px; flex-direction: column; gap: 12px; animation: fadeIn 0.3s ease; }
 .tip-content-container.show { display: flex; }
@@ -770,6 +770,123 @@ function toggleTip() {
         icon.style.transform = 'rotate(0deg)';
     }
 }
+
+
+// =========================================================================
+// 👇 데이터 수집 및 구글 앱스 스크립트 전송 트래킹 코드 (기존 로직 후킹) 👇
+// =========================================================================
+(function() {
+    // [중요] 구글 앱스 스크립트 Web App URL을 여기에 넣어주세요.
+    const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyEZenydgc_O82FKr9jaaRwlUVLyIrPnPwDMxa-j3BWPi6-xPhk4l8KWPllvYmnmW9z/exec"; 
+    
+    // 수집할 데이터 저장소 (접속 시점은 고정 저장됨)
+    let trackingData = {
+        aid: new URLSearchParams(window.location.search).get('aid') || '알수없음', // 알림톡에서 받아온 AID
+        accessTime: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }), // 최초 접속 시점
+        maxStage: 0,
+        isFinished: false, // 6페이지 최초 도달 여부
+        retryCount: 0,     // 6페이지 재도달 횟수
+        clicks: {
+            makeLinkBtn: 0, // 실전 돌입! 내 제휴링크 만들기
+            tipToggleBtn: 0, // 초보자를 위한 링크 삽입 꿀팁
+            exampleBtn: 0,  // 잘 만든 비교표 예시 보기
+            guideBtn: 0     // 더 상세한 제휴링크 가이드
+        }
+    };
+
+    // 웹훅으로 데이터 쏘기 함수
+    function sendTrackingData() {
+        if (!WEBHOOK_URL || WEBHOOK_URL.includes("여기에_")) return;
+
+        const payload = {
+            "접속 시점": trackingData.accessTime,
+            "AID": trackingData.aid,
+            "완료 단계(N/6)": trackingData.maxStage > 0 ? trackingData.maxStage + "/6" : "0/6",
+            "재시도 횟수": trackingData.retryCount,
+            "버튼클릭_내링크만들기": trackingData.clicks.makeLinkBtn,
+            "버튼클릭_꿀팁토글": trackingData.clicks.tipToggleBtn,
+            "버튼클릭_비교표예시": trackingData.clicks.exampleBtn,
+            "버튼클릭_가이드확인": trackingData.clicks.guideBtn
+        };
+
+        // GAS는 no-cors 설정과 form-urlencoded 형태 조합이 가장 안정적입니다.
+        fetch(WEBHOOK_URL, {
+            method: "POST",
+            mode: "no-cors", 
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams(payload).toString()
+        }).catch(e => console.error("Tracking Send Error:", e));
+    }
+
+    // 1. 기존 goToPage 함수 가로채기(Hooking) -> 페이지 진행단계 및 재시도 감지
+    if (typeof window.goToPage === 'function') {
+        const originalGoToPage = window.goToPage;
+        window.goToPage = function(pageNum) {
+            originalGoToPage.apply(this, arguments); // 기존 기능 정상 작동
+
+            // 최초 6단계 도달 전까지는 최고 단계 갱신 후 발송
+            if (!trackingData.isFinished) {
+                if (pageNum > trackingData.maxStage) {
+                    trackingData.maxStage = pageNum;
+                    sendTrackingData(); 
+                }
+                if (pageNum === 6) {
+                    trackingData.isFinished = true; // 최초 끝페이지 도착 완료
+                }
+            } else {
+                // 이미 끝났는데 다시 1~5로 돌아갔다가 6페이지로 온 경우 (재시도)
+                if (pageNum === 6) {
+                    trackingData.retryCount++;
+                    sendTrackingData();
+                }
+            }
+        };
+    }
+
+    // 2. 꿀팁 토글 버튼 함수 가로채기 (클릭수 추적)
+    if (typeof window.toggleTip === 'function') {
+        const originalToggleTip = window.toggleTip;
+        window.toggleTip = function() {
+            originalToggleTip.apply(this, arguments); 
+            trackingData.clicks.tipToggleBtn++;
+            sendTrackingData();
+        };
+    }
+
+    // 3. 화면 클릭 이벤트 위임을 통한 나머지 결과 페이지 버튼 클릭수 감지
+    document.addEventListener('click', function(e) {
+        let isTrackedClick = false;
+
+        // 버튼 내부의 아이콘/텍스트를 클릭해도 버튼 본체를 찾도록 closest 사용
+        const makeLinkBtn = e.target.closest('button[onclick*="n7myPx7"]');
+        if (makeLinkBtn) {
+            trackingData.clicks.makeLinkBtn++;
+            isTrackedClick = true;
+        }
+
+        const exampleBtn = e.target.closest('div[onclick*="ZkQW4qg"]');
+        if (exampleBtn) {
+            trackingData.clicks.exampleBtn++;
+            isTrackedClick = true;
+        }
+
+        const guideBtn = e.target.closest('a[onclick*="NpzC5Xu"]');
+        if (guideBtn) {
+            trackingData.clicks.guideBtn++;
+            isTrackedClick = true;
+        }
+
+        if (isTrackedClick) {
+            sendTrackingData();
+        }
+    });
+
+    // 화면 로딩 완료 직후 최초 0단계 셋업 데이터 발송
+    window.addEventListener('load', function() {
+        sendTrackingData();
+    });
+
+})();
 </script>
 
 </body>
