@@ -166,7 +166,7 @@ body { background-color: #fff; display: flex; justify-content: center; align-ite
 .modal-desc { font-size: 13px; color: #6b7280; margin: 0; }
 
 /* =========================================
-   추가된 스타일: 6페이지 꿀팁 토글 영역 
+   추가된 스타일: 6페이지 꿀팁 토글 영역 
 ========================================= */
 .tip-content-container { display: none; width: 90%; max-width: 360px; margin-top: 4px; flex-direction: column; gap: 12px; animation: fadeIn 0.3s ease; }
 .tip-content-container.show { display: flex; }
@@ -390,42 +390,42 @@ body { background-color: #fff; display: flex; justify-content: center; align-ite
 <div class="bottom-area" style="margin-top: 110px; margin-bottom: 40px; padding-top: 0;">
 <div class="result-btn-group">
 <div class="result-tooltip">
-    <div class="result-tooltip-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-    </div>
-    <span class="result-tooltip-text">방금 본 수익, 이제 내 통장으로!</span>
+    <div class="result-tooltip-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    </div>
+    <span class="result-tooltip-text">방금 본 수익, 이제 내 통장으로!</span>
 </div>
 <button class="btn btn-primary pulse-effect" onclick="window.open('https://dub.sh/n7myPx7', '_blank')">실전 돌입! 내 제휴링크 만들기</button>
 <button class="btn btn-secondary-solid" onclick="toggleTip()">
-    초보자를 위한 링크 삽입 꿀팁
-    <svg id="tip-toggle-icon" style="transition: transform 0.3s;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+    초보자를 위한 링크 삽입 꿀팁
+    <svg id="tip-toggle-icon" style="transition: transform 0.3s;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
 </button>
 
 <div class="tip-content-container" id="tip-content">
-    <div class="tip-card">
-        <div class="tip-badge badge-easy">⭐ 매우 쉬움</div>
-        <div class="tip-card-title">제휴링크를 본문에 2번 이상 넣기</div>
-        <div class="tip-card-desc">수익 발생 크리에이터 85%는 2번 이상 제휴링크를 삽입합니다.</div>
-        <div class="tip-card-bulb">💡 "최저가 링크", "구매처 바로가기" 등 문구와 함께!</div>
-    </div>
-    
-    <div class="tip-card">
-        <div class="tip-badge badge-mid">⭐⭐ 쉬움 + 효과적</div>
-        <div class="tip-card-title">가격, 할인, 혜택 정보 한 줄 추가</div>
-        <div class="tip-card-desc">이 정보는 제휴링크 클릭 수를 평균 32% 증가시킵니다.</div>
-        <div class="tip-card-bulb">💡 "지금 3만원대네요" 처럼 가격을 넌지시 알려주세요.</div>
-    </div>
-    
-    <div class="tip-card highlight-card">
-        <div>
-            <span class="tip-badge badge-hard">⭐⭐⭐⭐ 수익 발생의 비밀</span>
-            <span class="badge-jump">👈 수익 퀀텀 점프!</span>
-        </div>
-        <div class="tip-card-title">구매처별 가격/스펙 비교표 만들기</div>
-        <div class="tip-card-desc">STAR와 ELITE 등급의 <strong>90%</strong>는 '비교 정보'를 제공합니다.<br>구매를 만드는 가장 강력한 정보!</div>
-        <div class="tip-card-bulb">💡 표로 가격과 특징을 한눈에 비교해주세요.</div>
-        <div class="tip-example-btn" onclick="window.open('https://dub.sh/ZkQW4qg', '_blank')">📊 잘 만든 비교표 예시 보기 &gt;</div>
-    </div>
+    <div class="tip-card">
+        <div class="tip-badge badge-easy">⭐ 매우 쉬움</div>
+        <div class="tip-card-title">제휴링크를 본문에 2번 이상 넣기</div>
+        <div class="tip-card-desc">수익 발생 크리에이터 85%는 2번 이상 제휴링크를 삽입합니다.</div>
+        <div class="tip-card-bulb">💡 "최저가 링크", "구매처 바로가기" 등 문구와 함께!</div>
+    </div>
+    
+    <div class="tip-card">
+        <div class="tip-badge badge-mid">⭐⭐ 쉬움 + 효과적</div>
+        <div class="tip-card-title">가격, 할인, 혜택 정보 한 줄 추가</div>
+        <div class="tip-card-desc">이 정보는 제휴링크 클릭 수를 평균 32% 증가시킵니다.</div>
+        <div class="tip-card-bulb">💡 "지금 3만원대네요" 처럼 가격을 넌지시 알려주세요.</div>
+    </div>
+    
+    <div class="tip-card highlight-card">
+        <div>
+            <span class="tip-badge badge-hard">⭐⭐⭐⭐ 수익 발생의 비밀</span>
+            <span class="badge-jump">👈 수익 퀀텀 점프!</span>
+        </div>
+        <div class="tip-card-title">구매처별 가격/스펙 비교표 만들기</div>
+        <div class="tip-card-desc">STAR와 ELITE 등급의 <strong>90%</strong>는 '비교 정보'를 제공합니다.<br>구매를 만드는 가장 강력한 정보!</div>
+        <div class="tip-card-bulb">💡 표로 가격과 특징을 한눈에 비교해주세요.</div>
+        <div class="tip-example-btn" onclick="window.open('https://dub.sh/ZkQW4qg', '_blank')">📊 잘 만든 비교표 예시 보기 &gt;</div>
+    </div>
 </div>
 
 <a class="text-link-guide" onclick="window.open('https://dub.sh/NpzC5Xu', '_blank')">더 상세한 제휴링크 가이드 확인하기 ></a>
@@ -759,16 +759,16 @@ setTimeout(() => goToPage(6), 1500);
 // 추가된 스크립트: 6페이지 꿀팁 토글 함수
 // =========================================
 function toggleTip() {
-    const content = document.getElementById('tip-content');
-    const icon = document.getElementById('tip-toggle-icon');
-    
-    content.classList.toggle('show');
-    
-    if(content.classList.contains('show')) {
-        icon.style.transform = 'rotate(180deg)';
-    } else {
-        icon.style.transform = 'rotate(0deg)';
-    }
+    const content = document.getElementById('tip-content');
+    const icon = document.getElementById('tip-toggle-icon');
+    
+    content.classList.toggle('show');
+    
+    if(content.classList.contains('show')) {
+        icon.style.transform = 'rotate(180deg)';
+    } else {
+        icon.style.transform = 'rotate(0deg)';
+    }
 }
 </script>
 
